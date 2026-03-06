@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro</title>
+    <title>Pomodoro Fofo & Intuitivo</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
 
@@ -28,64 +28,126 @@
             justify-content: center;
         }
 
-        /* A caixinha principal do Pomodoro */
+        /* A caixinha principal do Pomodoro - Mais arredondada */
         .pomodoro-box {
             background-color: #ffffff;
-            border-radius: 8px; /* Arredondamento suave */
-            box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.05);
-            padding: 30px;
+            border-radius: 16px; /* Cantos mais suaves e 'fofos' */
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); /* Sombra mais suave e lilás */
+            padding: 35px;
             text-align: center;
-            width: 260px;
-            color: #c9b8e8; /* Textos em lilás */
+            width: 280px;
+            color: #c9b8e8; /* Textos gerais em lilás */
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         #mode {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            color: rgba(201, 184, 232, 0.8);
+        }
+
+        /* --- CONTAINER DO TIMER COM CÍRCULO VISUAL --- */
+        .timer-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        /* O Círculo SVG de progresso */
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-90deg); /* Começa no topo */
+            transform-origin: center;
+        }
+
+        .progress-ring__circle-bg {
+            stroke: rgba(201, 184, 232, 0.1); /* Fundo sutil do círculo */
+        }
+
+        .progress-ring__circle {
+            stroke: #c9b8e8; /* Cor do progresso (lilás principal) */
+            stroke-linecap: round; /* Pontas arredondadas na barra */
+            transition: stroke-dashoffset 0.3s linear; /* Animação suave */
         }
 
         #timer {
-            font-size: 4rem;
+            font-size: 3.8rem;
             font-weight: 600;
             line-height: 1;
-            margin-bottom: 20px;
-            color: #a58fd6; /* Um lilás um tiquinho mais escuro pro número brilhar */
+            color: #a58fd6; /* Número em destaque */
+            position: relative;
+            z-index: 10; /* Garante que fique sobre o círculo */
         }
 
+        /* --- BOTÕES COM CORES PASTÉIS --- */
         .controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
-        button {
-            background-color: rgba(201, 184, 232, 0.15);
-            color: #a58fd6;
+        button.ctrl-btn {
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 20px;
+            border-radius: 8px; /* Cantos mais suaves */
             font-family: inherit;
             font-weight: 600;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.1s ease, box-shadow 0.2s ease, background-color 0.3s ease;
         }
 
-        button:hover {
-            background-color: #c9b8e8;
-            color: #ffffff;
+        /* Efeito de clique físico 'fofo' */
+        button.ctrl-btn:active {
+            transform: scale(0.96);
         }
 
-        /* Estante de Tomates */
+        /* Iniciar - Verde Menta Pastel */
+        #btn-start {
+            color: #6bc295; /* Texto verde menta escuro */
+            background-color: #e0f7ea; /* Fundo menta pastel */
+        }
+        #btn-start:hover {
+            background-color: #bdfcc9;
+            box-shadow: 0 2px 8px rgba(189, 252, 201, 0.4);
+        }
+
+        /* Pausar - Pêssego Pastel */
+        #btn-pause {
+            color: #e69d73; /* Texto pêssego escuro */
+            background-color: #fff3e6; /* Fundo pêssego pastel */
+        }
+        #btn-pause:hover {
+            background-color: #ffe0c0;
+            box-shadow: 0 2px 8px rgba(255, 224, 192, 0.4);
+        }
+
+        /* Zerar - Rosa Chá Pastel */
+        #btn-reset {
+            color: #e6a0a0; /* Texto rosa chá escuro */
+            background-color: #ffe5e5; /* Fundo rosa pastel */
+        }
+        #btn-reset:hover {
+            background-color: #ffcccc;
+            box-shadow: 0 2px 8px rgba(255, 204, 204, 0.4);
+        }
+
+        /* --- ESTANTE DE TOMATES --- */
         .tracker-container {
             width: 100%;
-            min-height: 40px;
+            min-height: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -95,14 +157,14 @@
         }
 
         #tomatoes {
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
         }
 
         #clear-tomatoes {
-            font-size: 0.7rem;
-            color: rgba(201, 184, 232, 0.8);
+            font-size: 0.75rem;
+            color: rgba(201, 184, 232, 0.7);
             background: none;
             border: none;
             padding: 0;
@@ -123,12 +185,19 @@
     <div class="centrador">
         <div class="pomodoro-box">
             <div id="mode">Tempo de Foco</div>
-            <div id="timer">25:00</div>
+            
+            <div class="timer-container">
+                <svg class="progress-ring" width="200" height="200">
+                    <circle class="progress-ring__circle-bg" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                    <circle class="progress-ring__circle" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                </svg>
+                <div id="timer">25:00</div>
+            </div>
             
             <div class="controls">
-                <button id="btn-start">Iniciar</button>
-                <button id="btn-pause">Pausar</button>
-                <button id="btn-reset">Zerar</button>
+                <button id="btn-start" class="ctrl-btn">Iniciar</button>
+                <button id="btn-pause" class="ctrl-btn">Pausar</button>
+                <button id="btn-reset" class="ctrl-btn">Zerar</button>
             </div>
 
             <div class="tracker-container">
@@ -139,7 +208,12 @@
     </div>
 
     <script>
-        let timeLeft = 25 * 60; // 25 minutos em segundos
+        // Configurações de tempo (em minutos)
+        const WORK_TIME = 25;
+        const BREAK_TIME = 5;
+
+        let totalTime = WORK_TIME * 60; // Tempo total do modo atual em segundos
+        let timeLeft = totalTime; 
         let timerId = null;
         let isWorkMode = true;
         
@@ -155,10 +229,30 @@
         const btnReset = document.getElementById('btn-reset');
         const btnClearTomatoes = document.getElementById('clear-tomatoes');
 
+        // Configuração do Círculo de Progresso (SVG)
+        const circle = document.querySelector('.progress-ring__circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius; // ~565.48
+
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = circumference; // Começa vazio (mas invertemos na lógica)
+
+        function setProgress(percent) {
+            // percent deve ser entre 0 e 1
+            // Invertemos a lógica: 1 = cheio (offset 0), 0 = vazio (offset total)
+            const offset = circumference * (1 - percent);
+            circle.style.strokeDashoffset = offset;
+        }
+
         function updateDisplay() {
+            // Atualiza o texto numérico
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Atualiza o progresso visual do círculo
+            const progressPercent = timeLeft / totalTime;
+            setProgress(progressPercent);
         }
 
         function renderTomatoes() {
@@ -168,18 +262,20 @@
 
         function toggleMode() {
             if (isWorkMode) {
-                // Terminou o Foco -> Vai pra Pausa
+                // Terminou o Foco -> Adiciona Tomate e vai pra Pausa
                 completedSessions++;
                 localStorage.setItem('pomodoroTomatoes', completedSessions);
                 renderTomatoes();
                 
                 isWorkMode = false;
-                timeLeft = 5 * 60;
+                totalTime = BREAK_TIME * 60; // Define o novo tempo total
+                timeLeft = totalTime;
                 modeDisplay.textContent = 'Pausa Curta';
             } else {
                 // Terminou a Pausa -> Vai pro Foco
                 isWorkMode = true;
-                timeLeft = 25 * 60;
+                totalTime = WORK_TIME * 60; // Define o novo tempo total
+                timeLeft = totalTime;
                 modeDisplay.textContent = 'Tempo de Foco';
             }
             updateDisplay();
@@ -188,13 +284,16 @@
         btnStart.addEventListener('click', () => {
             if (timerId !== null) return; // Se já estiver rodando, não faz nada
             
+            // Efeito visual no botão ao iniciar
+            btnStart.style.transform = "scale(0.98)";
+            setTimeout(() => btnStart.style.transform = "scale(1)", 100);
+
             timerId = setInterval(() => {
                 timeLeft--;
                 if (timeLeft < 0) {
                     clearInterval(timerId);
                     timerId = null;
                     toggleMode();
-                    // Quando o tempo acaba, ele pausa esperando você dar "Iniciar" no próximo ciclo.
                 } else {
                     updateDisplay();
                 }
@@ -210,7 +309,8 @@
             clearInterval(timerId);
             timerId = null;
             isWorkMode = true;
-            timeLeft = 25 * 60;
+            totalTime = WORK_TIME * 60; // Reseta o tempo total
+            timeLeft = totalTime;
             modeDisplay.textContent = 'Tempo de Foco';
             updateDisplay();
         });
@@ -221,7 +321,7 @@
             renderTomatoes();
         });
 
-        // Inicializa a tela
+        // Inicializa a tela com o progresso cheio (100%)
         updateDisplay();
         renderTomatoes();
     </script>
