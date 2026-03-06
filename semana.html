@@ -12,33 +12,28 @@
       box-sizing: border-box;
     }
 
-    html {
-      background: transparent; /* Garante que os cantos externos fiquem invisíveis no embed */
-    }
-
+    /* Garantimos que o fundo do embed seja totalmente transparente */
     html, body {
       width: 100%;
       height: 100%;
+      background: transparent;
+      overflow: hidden; /* Evita qualquer barra de rolagem indesejada */
     }
 
-    body {
-      background-color: #c9b8e8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Playfair Display', Georgia, serif;
-      min-height: 100vh;
-      /* --- ADICIONADO PARA OS CANTOS ARREDONDADOS --- */
-      border-radius: 8px; 
+    /* Esta é a caixa que vai segurar a cor e o arredondamento */
+    .container-arredondado {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0; /* Estica para preencher todo o embed */
+      background-color: #c9b8e8; /* Cor de fundo */
+      border-radius: 8px; /* O seu arredondamento seguro aqui */
       overflow: hidden;
-      /* ---------------------------------------------- */
-    }
-
-    .widget {
+      
+      /* Centraliza o conteúdo */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      font-family: 'Playfair Display', Georgia, serif;
       gap: 4px;
     }
 
@@ -69,7 +64,8 @@
   </style>
 </head>
 <body>
-  <div class="widget">
+  
+  <div class="container-arredondado">
     <span class="label">semana</span>
     <div class="divider"></div>
     <span class="number" id="week-number">—</span>
