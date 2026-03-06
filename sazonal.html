@@ -1,160 +1,331 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sazonalidade Itajubá</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet" />
-  
-  <style>
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sazonalidade - Itajubá</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-    /* Caixa principal com fundo lilás e sombra fofa */
-    .widget-container {
-      background-color: #c9b8e8; /* Fundo lilás pastel */
-      border-radius: 16px; 
-      box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.2); 
-      overflow: hidden;
-      font-family: 'Quicksand', sans-serif; /* Fonte fofa */
-      color: #ffffff; /* Texto branco */
-      width: 320px;
-      padding: 20px;
-      text-align: left;
-    }
+        .centrador {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
 
-    /* Título principal do mês */
-    .month-header {
-      font-size: 0.9rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #fdd0f8; /* Título laranja pastel */
-      text-transform: lowercase;
-    }
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            width: 340px; /* Um pouquinho mais largo para caber mais pills */
+            max-height: 95%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-    /* Estilo para as seções horizontais */
-    .season-section {
-      margin-bottom: 20px;
-    }
+        /* --- CABEÇALHO --- */
+        .header {
+            background-color: #c9b8e8;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 20px;
+            position: relative;
+        }
 
-    /* Estilo para o cabeçalho da categoria com personagem e título */
-    .category-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
 
-    .category-icon {
-      font-size: 1.2rem;
-    }
+        .header button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
 
-    .category-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
+        .header button:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
 
-    /* Estilo para a lista de itens */
-    .item-list {
-      list-style-type: disc;
-      list-style-position: inside;
-      padding-left: 0;
-      font-size: 0.75rem;
-      line-height: 1.6;
-    }
+        .month-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
 
-    .item-list li {
-      margin-bottom: 4px;
-    }
+        .season-name {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 5px;
+            color: #fcfaff;
+            opacity: 0.9;
+        }
 
-    /* Estilo para o rodapé */
-    .season-footer {
-      font-size: 0.7rem;
-      text-align: center;
-      color: #fdd0f8; /* Laranja pastel */
-      margin-top: 10px;
-    }
-  </style>
+        /* --- CORPO DA LISTA --- */
+        .content {
+            padding: 15px 20px 25px 20px;
+            overflow-y: auto; 
+            scrollbar-width: thin; 
+            scrollbar-color: #e3d8f8 transparent;
+        }
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content::-webkit-scrollbar-thumb {
+            background-color: #e3d8f8;
+            border-radius: 10px;
+        }
+
+        .category-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #a58fd6;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .category-title:first-child {
+            margin-top: 0;
+        }
+
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .item-pill {
+            background-color: #fcfaff;
+            color: #8c73c8;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(201, 184, 232, 0.4);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            cursor: default;
+        }
+
+        .item-pill:hover {
+            background-color: #e3d8f8;
+            transform: translateY(-2px);
+        }
+
+    </style>
 </head>
 <body>
-  
-  <div class="widget-container">
-    <div class="month-header">o que está na época em ${currentMonthName}</div>
-
-    <div class="season-section">
-      <div class="category-header">
-        <span class="category-icon">🐰</span>
-        <span class="category-title">Frutas</span>
-      </div>
-      <ul class="item-list">
-        ${currentMonthData.frutas.map(item => `<li>${item}</li>`).join('')}
-      </ul>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            <div class="header">
+                <div class="header-top">
+                    <button id="btn-prev">❮</button>
+                    <div class="month-name" id="month-display">Janeiro</div>
+                    <button id="btn-next">❯</button>
+                </div>
+                <div class="season-name" id="season-display">☀️ Verão</div>
+            </div>
+            
+            <div class="content" id="content-display">
+                </div>
+        </div>
     </div>
 
-    <div class="season-section">
-      <div class="category-header">
-        <span class="category-icon">🐻</span>
-        <span class="category-title">Legumes</span>
-      </div>
-      <ul class="item-list">
-        ${currentMonthData.legumes.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
+    <script>
+        // Banco de dados sazonal Expandido (+10 por categoria)
+        const seasonalData = [
+            {
+                month: "Janeiro",
+                season: "☀️ Verão",
+                frutas: ["Abacaxi", "Manga", "Melancia", "Uva", "Maracujá", "Limão", "Coco verde", "Figo", "Framboesa", "Mamão", "Melão", "Pêssego"],
+                verduras: ["Alface", "Cebolinha", "Hortelã", "Rúcula", "Salsa", "Acelga", "Alho-poró", "Coentro", "Couve", "Repolho", "Escarola"],
+                legumes: ["Abóbora", "Milho verde", "Pimentão", "Quiabo", "Tomate", "Abobrinha", "Berinjela", "Beterraba", "Cenoura", "Chuchu", "Pepino"],
+                oleaginosas: ["Semente de abóbora", "Amendoim", "Castanha-do-pará", "Castanha-de-caju", "Chia", "Linhaça", "Gergelim", "Semente de girassol", "Macadâmia", "Nozes"],
+                flores: ["Girassol", "Orquídea", "Boca-de-leão", "Rosa", "Margarida", "Antúrio", "Astromélia", "Gérbera", "Lisianthus", "Crisântemo"]
+            },
+            {
+                month: "Fevereiro",
+                season: "☀️ Verão",
+                frutas: ["Abacate", "Ameixa", "Pêssego", "Goiaba", "Figo", "Carambola", "Maçã", "Pera", "Pinha", "Seriguela", "Uva"],
+                verduras: ["Couve", "Repolho", "Hortelã", "Salsa", "Agrião", "Alface", "Cebolinha", "Chicória", "Coentro", "Mostarda", "Rúcula"],
+                legumes: ["Berinjela", "Chuchu", "Pepino", "Tomate", "Abóbora", "Beterraba", "Cenoura", "Inhame", "Jiló", "Milho verde", "Pimentão", "Quiabo"],
+                oleaginosas: ["Castanha-do-pará", "Gergelim", "Amendoim", "Castanha-de-caju", "Semente de abóbora", "Semente de girassol", "Chia", "Linhaça", "Macadâmia", "Pistache"],
+                flores: ["Lírio", "Angélica", "Cravina", "Rosa", "Gérbera", "Orquídea", "Margarida", "Copo-de-leite", "Astromélia", "Gladíolo"]
+            },
+            {
+                month: "Março",
+                season: "☀️ Verão / 🍂 Outono",
+                frutas: ["Abacate", "Banana", "Caqui", "Limão", "Maçã", "Pera", "Goiaba", "Maracujá", "Tangerina", "Mamão", "Uva"],
+                verduras: ["Acelga", "Alho-poró", "Rúcula", "Escarola", "Agrião", "Alface", "Cebolinha", "Couve", "Hortelã", "Repolho", "Salsa"],
+                legumes: ["Abóbora", "Chuchu", "Jiló", "Mandioca", "Abobrinha", "Berinjela", "Beterraba", "Cenoura", "Inhame", "Nabo", "Pepino", "Quiabo", "Tomate"],
+                oleaginosas: ["Noz-pecã", "Amendoim", "Castanha-de-caju", "Castanha-do-pará", "Linhaça", "Chia", "Gergelim", "Semente de abóbora", "Semente de girassol", "Amêndoas"],
+                flores: ["Margarida", "Gérbera", "Cravo", "Orquídea", "Rosa", "Antúrio", "Lírio", "Astromélia", "Crisântemo", "Lisianthus"]
+            },
+            {
+                month: "Abril",
+                season: "🍂 Outono",
+                frutas: ["Caqui", "Maçã", "Tangerina", "Pera", "Kiwi", "Abacate", "Ameixa", "Banana", "Figo", "Limão", "Mamão"],
+                verduras: ["Alface", "Chicória", "Espinafre", "Mostarda", "Acelga", "Agrião", "Alho-poró", "Cebolinha", "Couve", "Repolho", "Rúcula"],
+                legumes: ["Batata-doce", "Mandioca", "Nabo", "Inhame", "Abóbora", "Abobrinha", "Berinjela", "Beterraba", "Cenoura", "Chuchu", "Tomate"],
+                oleaginosas: ["Amendoim", "Noz-pecã", "Pinhão", "Castanha-do-pará", "Castanha-de-caju", "Semente de girassol", "Chia", "Linhaça", "Gergelim", "Nozes"],
+                flores: ["Crisântemo", "Antúrio", "Gladíolo", "Rosa", "Orquídea", "Gérbera", "Margarida", "Cravina", "Astromélia", "Lírio"]
+            },
+            {
+                month: "Maio",
+                season: "🍂 Outono",
+                frutas: ["Kiwi", "Mexerica", "Ponkan", "Laranja-lima", "Abacate", "Banana", "Caqui", "Maçã", "Pera", "Tangerina", "Uva"],
+                verduras: ["Agrião", "Couve", "Mostarda", "Espinafre", "Acelga", "Alface", "Alho-poró", "Chicória", "Escarola", "Rúcula", "Salsa"],
+                legumes: ["Ervilha", "Inhame", "Mandioquinha", "Cenoura", "Abóbora", "Batata-doce", "Beterraba", "Chuchu", "Mandioca", "Nabo", "Rabanete"],
+                oleaginosas: ["Pinhão", "Semente de girassol", "Amendoim", "Nozes", "Castanha-do-pará", "Castanha-de-caju", "Chia", "Linhaça", "Gergelim", "Amêndoas"],
+                flores: ["Azaleia", "Camélia", "Hortênsia", "Orquídea", "Rosa", "Crisântemo", "Margarida", "Gérbera", "Copo-de-leite", "Tulipa"]
+            },
+            {
+                month: "Junho",
+                season: "🍂 Outono / ❄️ Inverno",
+                frutas: ["Morango", "Laranja", "Mexerica", "Ponkan", "Carambola", "Kiwi", "Maçã", "Tangerina", "Abacate", "Banana", "Figo"],
+                verduras: ["Brócolis", "Espinafre", "Agrião", "Couve", "Acelga", "Alho-poró", "Chicória", "Escarola", "Mostarda", "Repolho", "Rúcula"],
+                legumes: ["Batata-doce", "Cenoura", "Mandioca", "Ervilha", "Abóbora", "Beterraba", "Cará", "Inhame", "Mandioquinha", "Nabo", "Rabanete"],
+                oleaginosas: ["Pinhão", "Amendoim", "Nozes", "Castanha-de-caju", "Castanha-do-pará", "Semente de abóbora", "Semente de girassol", "Chia", "Linhaça", "Amêndoas"],
+                flores: ["Camélia", "Tulipa", "Orquídea Cymbidium", "Azaleia", "Rosa", "Copo-de-leite", "Hortênsia", "Crisântemo", "Gérbera", "Margarida"]
+            },
+            {
+                month: "Julho",
+                season: "❄️ Inverno",
+                frutas: ["Laranja", "Morango", "Tangerina", "Kiwi", "Banana", "Carambola", "Maçã", "Mexerica", "Ponkan", "Pera", "Uva"],
+                verduras: ["Agrião", "Couve", "Rabanete", "Escarola", "Acelga", "Alho-poró", "Brócolis", "Chicória", "Espinafre", "Mostarda", "Repolho"],
+                legumes: ["Ervilha", "Cenoura", "Inhame", "Mandioquinha", "Batata-doce", "Beterraba", "Cará", "Mandioca", "Nabo", "Abóbora", "Rabanete"],
+                oleaginosas: ["Pinhão", "Nozes", "Castanhas", "Amendoim", "Castanha-do-pará", "Castanha-de-caju", "Amêndoas", "Macadâmia", "Semente de girassol", "Linhaça"],
+                flores: ["Tulipa", "Ipê-roxo", "Amor-perfeito", "Orquídea", "Rosa", "Camélia", "Copo-de-leite", "Azaleia", "Gérbera", "Crisântemo"]
+            },
+            {
+                month: "Agosto",
+                season: "❄️ Inverno",
+                frutas: ["Banana", "Caju", "Morango", "Maracujá", "Laranja", "Tangerina", "Kiwi", "Maçã", "Mexerica", "Limão", "Mamão"],
+                verduras: ["Brócolis", "Couve-flor", "Escarola", "Alho-poró", "Agrião", "Couve", "Espinafre", "Mostarda", "Rúcula", "Acelga", "Chicória"],
+                legumes: ["Abobrinha", "Pimentão", "Ervilha", "Beterraba", "Cenoura", "Inhame", "Mandioca", "Mandioquinha", "Nabo", "Cará", "Batata-doce"],
+                oleaginosas: ["Castanha-de-caju", "Amendoim", "Castanha-do-pará", "Nozes", "Pinhão", "Amêndoas", "Semente de abóbora", "Semente de girassol", "Chia", "Linhaça"],
+                flores: ["Ipê-amarelo", "Copo-de-leite", "Gérbera", "Orquídea", "Rosa", "Amor-perfeito", "Tulipa", "Camélia", "Azaleia", "Margarida"]
+            },
+            {
+                month: "Setembro",
+                season: "❄️ Inverno / 🌸 Primavera",
+                frutas: ["Jabuticaba", "Caju", "Melão", "Amora", "Pitanga", "Banana", "Laranja", "Maçã", "Mamão", "Morango", "Tangerina"],
+                verduras: ["Alho-poró", "Espinafre", "Chicória", "Brócolis", "Couve-flor", "Agrião", "Alface", "Couve", "Escarola", "Rúcula", "Mostarda"],
+                legumes: ["Alcachofra", "Berinjela", "Vagem", "Abobrinha", "Beterraba", "Cenoura", "Inhame", "Mandioquinha", "Pimentão", "Ervilha", "Tomate"],
+                oleaginosas: ["Castanha-do-pará", "Semente de abóbora", "Amendoim", "Castanha-de-caju", "Nozes", "Amêndoas", "Semente de girassol", "Gergelim", "Chia", "Linhaça"],
+                flores: ["Primavera", "Girassol", "Ipê-branco", "Orquídea", "Rosa", "Gérbera", "Copo-de-leite", "Margarida", "Astromélia", "Lírio"]
+            },
+            {
+                month: "Outubro",
+                season: "🌸 Primavera",
+                frutas: ["Acerola", "Jabuticaba", "Manga", "Melão", "Pêssego", "Amora", "Banana", "Caju", "Mamão", "Morango", "Pitanga", "Lima da pérsia"],
+                verduras: ["Alface", "Rúcula", "Manjericão", "Cebolinha", "Agrião", "Alho-poró", "Brócolis", "Couve-flor", "Escarola", "Espinafre", "Hortelã"],
+                legumes: ["Abobrinha", "Tomate", "Pepino", "Alcachofra", "Berinjela", "Beterraba", "Cenoura", "Inhame", "Pimentão", "Vagem", "Chuchu"],
+                oleaginosas: ["Gergelim", "Linhaça", "Castanha-do-pará", "Castanha-de-caju", "Amendoim", "Semente de abóbora", "Semente de girassol", "Nozes", "Amêndoas", "Chia"],
+                flores: ["Orquídea", "Rosa", "Lírio", "Girassol", "Primavera", "Gérbera", "Astromélia", "Margarida", "Boca-de-leão", "Crisântemo"]
+            },
+            {
+                month: "Novembro",
+                season: "🌸 Primavera",
+                frutas: ["Abacaxi", "Mamão", "Melancia", "Manga", "Amora", "Acerola", "Banana", "Caju", "Limão", "Melão", "Pêssego", "Pitanga"],
+                verduras: ["Cebolinha", "Hortelã", "Salsa", "Alface", "Agrião", "Alho-poró", "Brócolis", "Coentro", "Couve", "Escarola", "Rúcula"],
+                legumes: ["Pepino", "Tomate", "Milho verde", "Berinjela", "Abobrinha", "Beterraba", "Cenoura", "Chuchu", "Maxixe", "Pimentão", "Vagem"],
+                oleaginosas: ["Linhaça", "Castanha-de-caju", "Castanha-do-pará", "Amendoim", "Semente de abóbora", "Semente de girassol", "Gergelim", "Nozes", "Amêndoas", "Chia"],
+                flores: ["Hortênsia", "Gérbera", "Dália", "Orquídea", "Rosa", "Girassol", "Lírio", "Primavera", "Astromélia", "Margarida"]
+            },
+            {
+                month: "Dezembro",
+                season: "🌸 Primavera / ☀️ Verão",
+                frutas: ["Ameixa", "Cereja", "Lichia", "Pêssego", "Uva", "Abacaxi", "Limão", "Mamão", "Manga", "Maracujá", "Melancia", "Melão"],
+                verduras: ["Alface", "Rúcula", "Salsa", "Cebolinha", "Agrião", "Alho-poró", "Coentro", "Couve", "Escarola", "Hortelã", "Repolho"],
+                legumes: ["Pimentão", "Cenoura", "Vagem", "Quiabo", "Abobrinha", "Berinjela", "Beterraba", "Chuchu", "Milho verde", "Pepino", "Tomate"],
+                oleaginosas: ["Nozes", "Castanhas", "Amêndoas", "Castanha-de-caju", "Castanha-do-pará", "Amendoim", "Avelã", "Semente de abóbora", "Semente de girassol", "Chia", "Gergelim"],
+                flores: ["Lírio", "Copo-de-leite", "Bico-de-papagaio", "Orquídea", "Rosa", "Girassol", "Hortênsia", "Gérbera", "Dália", "Astromélia"]
+            }
+        ];
 
-    <div class="season-section">
-      <div class="category-header">
-        <span class="category-icon">🐸</span>
-        <span class="category-title">Verduras</span>
-      </div>
-      <ul class="item-list">
-        ${currentMonthData.verduras.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
+        let currentMonthIndex = new Date().getMonth();
 
-    <div class="season-section">
-      <div class="category-header">
-        <span class="category-icon">🌰</span>
-        <span class="category-title">Oleaginosas</span>
-      </div>
-      <ul class="item-list">
-        ${currentMonthData.oleaginosas.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
+        const monthDisplay = document.getElementById('month-display');
+        const seasonDisplay = document.getElementById('season-display');
+        const contentDisplay = document.getElementById('content-display');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
 
-    <div class="season-section">
-      <div class="category-header">
-        <span class="category-icon">🌸</span>
-        <span class="category-title">Flores</span>
-      </div>
-      <ul class="item-list">
-        ${currentMonthData.flores.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
+        function generatePills(items) {
+            return items.map(item => `<span class="item-pill">${item}</span>`).join('');
+        }
 
-    <div class="season-footer">estamos na estação: ${currentMonthName.toLowerCase()}</div>
-  </div>
+        function renderMonth(index) {
+            const data = seasonalData[index];
+            monthDisplay.textContent = data.month;
+            seasonDisplay.textContent = data.season;
 
+            contentDisplay.innerHTML = `
+                <div class="category-title">🍉 Frutas</div>
+                <div class="items-container">${generatePills(data.frutas)}</div>
+
+                <div class="category-title">🥬 Verduras</div>
+                <div class="items-container">${generatePills(data.verduras)}</div>
+
+                <div class="category-title">🥕 Legumes</div>
+                <div class="items-container">${generatePills(data.legumes)}</div>
+
+                <div class="category-title">🌰 Oleaginosas e Sementes</div>
+                <div class="items-container">${generatePills(data.oleaginosas)}</div>
+
+                <div class="category-title">🌸 Flores</div>
+                <div class="items-container">${generatePills(data.flores)}</div>
+            `;
+        }
+
+        btnPrev.addEventListener('click', () => {
+            currentMonthIndex = (currentMonthIndex === 0) ? 11 : currentMonthIndex - 1;
+            renderMonth(currentMonthIndex);
+        });
+
+        btnNext.addEventListener('click', () => {
+            currentMonthIndex = (currentMonthIndex === 11) ? 0 : currentMonthIndex + 1;
+            renderMonth(currentMonthIndex);
+        });
+
+        // Inicializa mostrando o mês atual
+        renderMonth(currentMonthIndex);
+    </script>
 </body>
 </html>
-  `;
-  // Substituir o conteúdo atual pelo novo HTML gerado
-  document.documentElement.innerHTML = html;
-}
-
-// Executar a função de injeção ao carregar a página
-injectContent();
