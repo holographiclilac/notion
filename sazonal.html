@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
 
     <style>
-        /* Tiramos o overflow: hidden e o height: 100% para o widget poder crescer */
         html, body {
             margin: 0;
             padding: 0;
@@ -22,22 +21,21 @@
 
         .centrador {
             display: flex;
-            align-items: flex-start; /* Alinha pelo topo para não cortar no Notion */
+            align-items: flex-start; 
             justify-content: center;
-            padding: 20px 10px; /* Um respiro em cima e embaixo */
+            padding: 15px 10px; 
             width: 100%;
         }
 
-        /* A caixa agora cresce o quanto for necessário (height: auto) */
         .widget-box {
             background-color: #ffffff;
             border-radius: 16px; 
             box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
             width: 340px;
-            height: auto; 
+            height: auto; /* Cresce o quanto precisar sem barra de rolagem */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Apenas para manter as bordas arredondadas intactas */
+            overflow: hidden; 
         }
 
         /* --- CABEÇALHO --- */
@@ -46,7 +44,7 @@
             color: #ffffff;
             display: flex;
             flex-direction: column;
-            padding: 15px 20px;
+            padding: 12px 18px; /* Mais fininho */
             position: relative;
         }
 
@@ -61,9 +59,9 @@
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: #ffffff;
-            font-size: 1.2rem;
-            width: 30px;
-            height: 30px;
+            font-size: 1rem;
+            width: 26px; /* Botões menores */
+            height: 26px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -77,7 +75,7 @@
         }
 
         .month-name {
-            font-size: 1.3rem;
+            font-size: 1.15rem; /* Fonte um pouco menor */
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -85,28 +83,27 @@
 
         .season-name {
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-top: 5px;
+            margin-top: 2px;
             color: #fcfaff;
             opacity: 0.9;
         }
 
-        /* --- CORPO DA LISTA SEM BARRA DE ROLAGEM --- */
+        /* --- CORPO DA LISTA (COMPACTO) --- */
         .content {
-            padding: 15px 20px 25px 20px;
-            /* Tiramos a barra de rolagem daqui! O conteúdo vai empurrar a caixa para baixo. */
+            padding: 10px 15px 15px 15px; /* Menos padding */
         }
 
         .category-title {
-            font-size: 0.95rem;
+            font-size: 0.85rem; /* Título menor */
             font-weight: 700;
             color: #a58fd6;
-            margin-top: 18px;
-            margin-bottom: 10px;
+            margin-top: 12px; /* Menos margem */
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         
         .category-title:first-child {
@@ -116,24 +113,28 @@
         .items-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 4px; /* Gruda mais as pills umas nas outras */
         }
 
+        /* Agora a pill é uma tag de link (<a>) */
         .item-pill {
             background-color: #fcfaff;
             color: #8c73c8;
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
+            padding: 3px 8px; /* Mais "magrinha" */
+            border-radius: 10px;
+            font-size: 0.75rem; /* Fonte menorzinha */
             font-weight: 600;
             border: 1px solid rgba(201, 184, 232, 0.4);
             transition: transform 0.2s ease, background-color 0.2s ease;
-            cursor: default;
+            cursor: pointer;
+            text-decoration: none; /* Tira o sublinhado azul padrão de links */
+            display: inline-block;
         }
 
         .item-pill:hover {
             background-color: #e3d8f8;
             transform: translateY(-2px);
+            color: #7850b4; /* Fica um pouquinho mais escuro ao passar o mouse */
         }
 
     </style>
@@ -157,10 +158,10 @@
     </div>
 
     <script>
+        // Mesmo banco de dados completão
         const seasonalData = [
             {
-                month: "Janeiro",
-                season: "☀️ Verão",
+                month: "Janeiro", season: "☀️ Verão",
                 frutas: ["Abacaxi", "Manga", "Melancia", "Uva", "Maracujá", "Limão", "Coco verde", "Figo", "Framboesa", "Mamão", "Melão", "Pêssego"],
                 verduras: ["Alface", "Cebolinha", "Hortelã", "Rúcula", "Salsa", "Acelga", "Alho-poró", "Coentro", "Couve", "Repolho", "Escarola"],
                 legumes: ["Abóbora", "Milho verde", "Pimentão", "Quiabo", "Tomate", "Abobrinha", "Berinjela", "Beterraba", "Cenoura", "Chuchu", "Pepino"],
@@ -168,8 +169,7 @@
                 flores: ["Girassol", "Orquídea", "Boca-de-leão", "Rosa", "Margarida", "Antúrio", "Astromélia", "Gérbera", "Lisianthus", "Crisântemo"]
             },
             {
-                month: "Fevereiro",
-                season: "☀️ Verão",
+                month: "Fevereiro", season: "☀️ Verão",
                 frutas: ["Abacate", "Ameixa", "Pêssego", "Goiaba", "Figo", "Carambola", "Maçã", "Pera", "Pinha", "Seriguela", "Uva"],
                 verduras: ["Couve", "Repolho", "Hortelã", "Salsa", "Agrião", "Alface", "Cebolinha", "Chicória", "Coentro", "Mostarda", "Rúcula"],
                 legumes: ["Berinjela", "Chuchu", "Pepino", "Tomate", "Abóbora", "Beterraba", "Cenoura", "Inhame", "Jiló", "Milho verde", "Pimentão", "Quiabo"],
@@ -177,8 +177,7 @@
                 flores: ["Lírio", "Angélica", "Cravina", "Rosa", "Gérbera", "Orquídea", "Margarida", "Copo-de-leite", "Astromélia", "Gladíolo"]
             },
             {
-                month: "Março",
-                season: "☀️ Verão / 🍂 Outono",
+                month: "Março", season: "☀️ Verão / 🍂 Outono",
                 frutas: ["Abacate", "Banana", "Caqui", "Limão", "Maçã", "Pera", "Goiaba", "Maracujá", "Tangerina", "Mamão", "Uva"],
                 verduras: ["Acelga", "Alho-poró", "Rúcula", "Escarola", "Agrião", "Alface", "Cebolinha", "Couve", "Hortelã", "Repolho", "Salsa"],
                 legumes: ["Abóbora", "Chuchu", "Jiló", "Mandioca", "Abobrinha", "Berinjela", "Beterraba", "Cenoura", "Inhame", "Nabo", "Pepino", "Quiabo", "Tomate"],
@@ -186,8 +185,7 @@
                 flores: ["Margarida", "Gérbera", "Cravo", "Orquídea", "Rosa", "Antúrio", "Lírio", "Astromélia", "Crisântemo", "Lisianthus"]
             },
             {
-                month: "Abril",
-                season: "🍂 Outono",
+                month: "Abril", season: "🍂 Outono",
                 frutas: ["Caqui", "Maçã", "Tangerina", "Pera", "Kiwi", "Abacate", "Ameixa", "Banana", "Figo", "Limão", "Mamão"],
                 verduras: ["Alface", "Chicória", "Espinafre", "Mostarda", "Acelga", "Agrião", "Alho-poró", "Cebolinha", "Couve", "Repolho", "Rúcula"],
                 legumes: ["Batata-doce", "Mandioca", "Nabo", "Inhame", "Abóbora", "Abobrinha", "Berinjela", "Beterraba", "Cenoura", "Chuchu", "Tomate"],
@@ -195,8 +193,7 @@
                 flores: ["Crisântemo", "Antúrio", "Gladíolo", "Rosa", "Orquídea", "Gérbera", "Margarida", "Cravina", "Astromélia", "Lírio"]
             },
             {
-                month: "Maio",
-                season: "🍂 Outono",
+                month: "Maio", season: "🍂 Outono",
                 frutas: ["Kiwi", "Mexerica", "Ponkan", "Laranja-lima", "Abacate", "Banana", "Caqui", "Maçã", "Pera", "Tangerina", "Uva"],
                 verduras: ["Agrião", "Couve", "Mostarda", "Espinafre", "Acelga", "Alface", "Alho-poró", "Chicória", "Escarola", "Rúcula", "Salsa"],
                 legumes: ["Ervilha", "Inhame", "Mandioquinha", "Cenoura", "Abóbora", "Batata-doce", "Beterraba", "Chuchu", "Mandioca", "Nabo", "Rabanete"],
@@ -204,8 +201,7 @@
                 flores: ["Azaleia", "Camélia", "Hortênsia", "Orquídea", "Rosa", "Crisântemo", "Margarida", "Gérbera", "Copo-de-leite", "Tulipa"]
             },
             {
-                month: "Junho",
-                season: "🍂 Outono / ❄️ Inverno",
+                month: "Junho", season: "🍂 Outono / ❄️ Inverno",
                 frutas: ["Morango", "Laranja", "Mexerica", "Ponkan", "Carambola", "Kiwi", "Maçã", "Tangerina", "Abacate", "Banana", "Figo"],
                 verduras: ["Brócolis", "Espinafre", "Agrião", "Couve", "Acelga", "Alho-poró", "Chicória", "Escarola", "Mostarda", "Repolho", "Rúcula"],
                 legumes: ["Batata-doce", "Cenoura", "Mandioca", "Ervilha", "Abóbora", "Beterraba", "Cará", "Inhame", "Mandioquinha", "Nabo", "Rabanete"],
@@ -213,8 +209,7 @@
                 flores: ["Camélia", "Tulipa", "Orquídea Cymbidium", "Azaleia", "Rosa", "Copo-de-leite", "Hortênsia", "Crisântemo", "Gérbera", "Margarida"]
             },
             {
-                month: "Julho",
-                season: "❄️ Inverno",
+                month: "Julho", season: "❄️ Inverno",
                 frutas: ["Laranja", "Morango", "Tangerina", "Kiwi", "Banana", "Carambola", "Maçã", "Mexerica", "Ponkan", "Pera", "Uva"],
                 verduras: ["Agrião", "Couve", "Rabanete", "Escarola", "Acelga", "Alho-poró", "Brócolis", "Chicória", "Espinafre", "Mostarda", "Repolho"],
                 legumes: ["Ervilha", "Cenoura", "Inhame", "Mandioquinha", "Batata-doce", "Beterraba", "Cará", "Mandioca", "Nabo", "Abóbora", "Rabanete"],
@@ -222,8 +217,7 @@
                 flores: ["Tulipa", "Ipê-roxo", "Amor-perfeito", "Orquídea", "Rosa", "Camélia", "Copo-de-leite", "Azaleia", "Gérbera", "Crisântemo"]
             },
             {
-                month: "Agosto",
-                season: "❄️ Inverno",
+                month: "Agosto", season: "❄️ Inverno",
                 frutas: ["Banana", "Caju", "Morango", "Maracujá", "Laranja", "Tangerina", "Kiwi", "Maçã", "Mexerica", "Limão", "Mamão"],
                 verduras: ["Brócolis", "Couve-flor", "Escarola", "Alho-poró", "Agrião", "Couve", "Espinafre", "Mostarda", "Rúcula", "Acelga", "Chicória"],
                 legumes: ["Abobrinha", "Pimentão", "Ervilha", "Beterraba", "Cenoura", "Inhame", "Mandioca", "Mandioquinha", "Nabo", "Cará", "Batata-doce"],
@@ -231,8 +225,7 @@
                 flores: ["Ipê-amarelo", "Copo-de-leite", "Gérbera", "Orquídea", "Rosa", "Amor-perfeito", "Tulipa", "Camélia", "Azaleia", "Margarida"]
             },
             {
-                month: "Setembro",
-                season: "❄️ Inverno / 🌸 Primavera",
+                month: "Setembro", season: "❄️ Inverno / 🌸 Primavera",
                 frutas: ["Jabuticaba", "Caju", "Melão", "Amora", "Pitanga", "Banana", "Laranja", "Maçã", "Mamão", "Morango", "Tangerina"],
                 verduras: ["Alho-poró", "Espinafre", "Chicória", "Brócolis", "Couve-flor", "Agrião", "Alface", "Couve", "Escarola", "Rúcula", "Mostarda"],
                 legumes: ["Alcachofra", "Berinjela", "Vagem", "Abobrinha", "Beterraba", "Cenoura", "Inhame", "Mandioquinha", "Pimentão", "Ervilha", "Tomate"],
@@ -240,8 +233,7 @@
                 flores: ["Primavera", "Girassol", "Ipê-branco", "Orquídea", "Rosa", "Gérbera", "Copo-de-leite", "Margarida", "Astromélia", "Lírio"]
             },
             {
-                month: "Outubro",
-                season: "🌸 Primavera",
+                month: "Outubro", season: "🌸 Primavera",
                 frutas: ["Acerola", "Jabuticaba", "Manga", "Melão", "Pêssego", "Amora", "Banana", "Caju", "Mamão", "Morango", "Pitanga", "Lima da pérsia"],
                 verduras: ["Alface", "Rúcula", "Manjericão", "Cebolinha", "Agrião", "Alho-poró", "Brócolis", "Couve-flor", "Escarola", "Espinafre", "Hortelã"],
                 legumes: ["Abobrinha", "Tomate", "Pepino", "Alcachofra", "Berinjela", "Beterraba", "Cenoura", "Inhame", "Pimentão", "Vagem", "Chuchu"],
@@ -249,8 +241,7 @@
                 flores: ["Orquídea", "Rosa", "Lírio", "Girassol", "Primavera", "Gérbera", "Astromélia", "Margarida", "Boca-de-leão", "Crisântemo"]
             },
             {
-                month: "Novembro",
-                season: "🌸 Primavera",
+                month: "Novembro", season: "🌸 Primavera",
                 frutas: ["Abacaxi", "Mamão", "Melancia", "Manga", "Amora", "Acerola", "Banana", "Caju", "Limão", "Melão", "Pêssego", "Pitanga"],
                 verduras: ["Cebolinha", "Hortelã", "Salsa", "Alface", "Agrião", "Alho-poró", "Brócolis", "Coentro", "Couve", "Escarola", "Rúcula"],
                 legumes: ["Pepino", "Tomate", "Milho verde", "Berinjela", "Abobrinha", "Beterraba", "Cenoura", "Chuchu", "Maxixe", "Pimentão", "Vagem"],
@@ -258,8 +249,7 @@
                 flores: ["Hortênsia", "Gérbera", "Dália", "Orquídea", "Rosa", "Girassol", "Lírio", "Primavera", "Astromélia", "Margarida"]
             },
             {
-                month: "Dezembro",
-                season: "🌸 Primavera / ☀️ Verão",
+                month: "Dezembro", season: "🌸 Primavera / ☀️ Verão",
                 frutas: ["Ameixa", "Cereja", "Lichia", "Pêssego", "Uva", "Abacaxi", "Limão", "Mamão", "Manga", "Maracujá", "Melancia", "Melão"],
                 verduras: ["Alface", "Rúcula", "Salsa", "Cebolinha", "Agrião", "Alho-poró", "Coentro", "Couve", "Escarola", "Hortelã", "Repolho"],
                 legumes: ["Pimentão", "Cenoura", "Vagem", "Quiabo", "Abobrinha", "Berinjela", "Beterraba", "Chuchu", "Milho verde", "Pepino", "Tomate"],
@@ -276,8 +266,12 @@
         const btnPrev = document.getElementById('btn-prev');
         const btnNext = document.getElementById('btn-next');
 
+        // Cria os links clicáveis que jogam para a busca do Google
         function generatePills(items) {
-            return items.map(item => `<span class="item-pill">${item}</span>`).join('');
+            return items.map(item => {
+                const query = encodeURIComponent(item + " cultivar");
+                return `<a href="https://www.google.com/search?q=${query}" target="_blank" class="item-pill">${item}</a>`;
+            }).join('');
         }
 
         function renderMonth(index) {
