@@ -114,7 +114,6 @@
             width: 180px;
             height: 180px;
             margin-bottom: 20px;
-            /* Tiramos o flexbox daqui para usar o posicionamento absoluto perfeito */
         }
 
         .progress-ring {
@@ -138,11 +137,10 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            /* Força o centro exato dos eixos X e Y */
             transform: translate(-50%, -50%);
-            /* Ajuste óptico fino para compensar o peso da fonte na base */
-            margin-top: -3px; 
-            font-size: 3.2rem;
+            /* Ajuste óptico fino para a nova fonte menor */
+            margin-top: -2px; 
+            font-size: 2.6rem; /* FONTE REDUZIDA AQUI */
             font-weight: 600;
             line-height: 1;
             color: #a58fd6; 
@@ -161,6 +159,7 @@
             font-weight: 600;
             cursor: pointer;
             color: #a58fd6;
+            text-transform: lowercase; /* Deixando o texto do lofi minúsculo também */
         }
         .lofi-toggle-container input {
             accent-color: #c9b8e8;
@@ -237,18 +236,18 @@
 <body>
     <div class="centrador">
         <div class="pomodoro-box">
-            <button class="btn-settings" id="btn-settings" title="Configurações">⚙️</button>
+            <button class="btn-settings" id="btn-settings" title="configurações">⚙️</button>
             
             <div class="settings-panel" id="settings-panel">
                 <div class="input-group">
-                    <label>Foco (min):</label>
+                    <label>foco (min):</label>
                     <input type="number" id="input-work" min="1" max="120" value="25">
                 </div>
                 <div class="input-group">
-                    <label>Pausa (min):</label>
+                    <label>pausa (min):</label>
                     <input type="number" id="input-break" min="1" max="60" value="5">
                 </div>
-                <button class="btn-save" id="btn-save">Salvar Tempos</button>
+                <button class="btn-save" id="btn-save">salvar tempos</button>
             </div>
 
             <div id="mode">Tempo de Foco</div>
@@ -263,19 +262,19 @@
 
             <label class="lofi-toggle-container">
                 <input type="checkbox" id="lofi-toggle" checked>
-                🎧 Rádio Lofi Automática
+                🎧 rádio lofi automática
             </label>
             
             <div class="controls">
-                <button id="btn-start" class="ctrl-btn">▶ Iniciar</button>
-                <button id="btn-pause" class="ctrl-btn">⏸ Pausar</button>
-                <button id="btn-skip" class="ctrl-btn">⏭ Pular</button>
-                <button id="btn-reset" class="ctrl-btn">🔄 Zerar</button>
+                <button id="btn-start" class="ctrl-btn">▶ iniciar</button>
+                <button id="btn-pause" class="ctrl-btn">⏸ pausar</button>
+                <button id="btn-skip" class="ctrl-btn">⏭ pular</button>
+                <button id="btn-reset" class="ctrl-btn">🔄 zerar</button>
             </div>
 
             <div class="tracker-container">
                 <div id="tomatoes"></div>
-                <button id="clear-tomatoes">Limpar tomates</button>
+                <button id="clear-tomatoes">limpar tomates</button>
             </div>
         </div>
     </div>
@@ -386,7 +385,7 @@
                 isWorkMode = false;
                 totalTime = BREAK_TIME * 60;
                 timeLeft = totalTime;
-                modeDisplay.textContent = 'Pausa Curta';
+                modeDisplay.textContent = 'Tempo de Pausa'; // Ajustado sutilmente
             } else {
                 isWorkMode = true;
                 totalTime = WORK_TIME * 60;
