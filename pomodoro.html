@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Reseta a página para evitar bordas e rolagens fantasma no Notion */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            overflow: hidden;
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        /* Força a centralização no embed do Notion */
+        .centrador {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* A caixinha principal do Pomodoro */
+        .pomodoro-box {
+            background-color: #ffffff;
+            border-radius: 8px; /* Arredondamento suave */
+            box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            text-align: center;
+            width: 260px;
+            color: #c9b8e8; /* Textos em lilás */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #mode {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        #timer {
+            font-size: 4rem;
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 20px;
+            color: #a58fd6; /* Um lilás um tiquinho mais escuro pro número brilhar */
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: rgba(201, 184, 232, 0.15);
+            color: #a58fd6;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #c9b8e8;
+            color: #ffffff;
+        }
+
+        /* Estante de Tomates */
+        .tracker-container {
+            width: 100%;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-top: 1px solid rgba(201, 184, 232, 0.2);
+            padding-top: 15px;
+        }
+
+        #tomatoes {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        #clear-tomatoes {
+            font-size: 0.7rem;
+            color: rgba(201, 184, 232, 0.8);
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-weight: 400;
+            text-decoration: underline;
+        }
+        
+        #clear-tomatoes:hover {
+            color: #a58fd6;
+            background: none;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="pomodoro-box">
+            <div id="mode">Tempo de Foco</div>
+            <div id="timer">25:00</div>
+            
+            <div class="controls">
+                <button id="btn-start">Iniciar</button>
+                <button id="btn-pause">Pausar</button>
+                <button id="btn-reset">Zerar</button>
+            </div>
+
+            <div class="tracker-container">
+                <div id="tomatoes"></div>
+                <button id="clear-tomatoes">Limpar tomates diários</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 25 * 60; // 25 minutos em segundos
+        let timerId = null;
+        let isWorkMode = true;
+        
+        // Recupera os tomates salvos no navegador ou começa com 0
+        let completedSessions = localStorage.getItem('pomodoroTomatoes') ? parseInt(localStorage.getItem('pomodoroTomatoes')) : 0;
+
+        const timerDisplay = document.getElementById('timer');
+        const modeDisplay = document.getElementById('mode');
+        const tomatoesDisplay = document.getElementById('tomatoes');
+        
+        const btnStart = document.getElementById('btn-start');
+        const btnPause = document.getElementById('btn-pause');
+        const btnReset = document.getElementById('btn-reset');
+        const btnClearTomatoes = document.getElementById('clear-tomatoes');
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function renderTomatoes() {
+            tomatoesDisplay.innerHTML = '🍅'.repeat(completedSessions);
+            btnClearTomatoes.style.display = completedSessions > 0 ? 'block' : 'none';
+        }
+
+        function toggleMode() {
+            if (isWorkMode) {
+                // Terminou o Foco -> Vai pra Pausa
+                completedSessions++;
+                localStorage.setItem('pomodoroTomatoes', completedSessions);
+                renderTomatoes();
+                
+                isWorkMode = false;
+                timeLeft = 5 * 60;
+                modeDisplay.textContent = 'Pausa Curta';
+            } else {
+                // Terminou a Pausa -> Vai pro Foco
+                isWorkMode = true;
+                timeLeft = 25 * 60;
+                modeDisplay.textContent = 'Tempo de Foco';
+            }
+            updateDisplay();
+        }
+
+        btnStart.addEventListener('click', () => {
+            if (timerId !== null) return; // Se já estiver rodando, não faz nada
+            
+            timerId = setInterval(() => {
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    toggleMode();
+                    // Quando o tempo acaba, ele pausa esperando você dar "Iniciar" no próximo ciclo.
+                } else {
+                    updateDisplay();
+                }
+            }, 1000); // 1000 milissegundos = 1 segundo
+        });
+
+        btnPause.addEventListener('click', () => {
+            clearInterval(timerId);
+            timerId = null;
+        });
+
+        btnReset.addEventListener('click', () => {
+            clearInterval(timerId);
+            timerId = null;
+            isWorkMode = true;
+            timeLeft = 25 * 60;
+            modeDisplay.textContent = 'Tempo de Foco';
+            updateDisplay();
+        });
+
+        btnClearTomatoes.addEventListener('click', () => {
+            completedSessions = 0;
+            localStorage.setItem('pomodoroTomatoes', 0);
+            renderTomatoes();
+        });
+
+        // Inicializa a tela
+        updateDisplay();
+        renderTomatoes();
+    </script>
+</body>
+</html>
