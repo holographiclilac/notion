@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Fofo & Intuitivo</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     <style>
         html, body {
@@ -15,7 +15,8 @@
             height: 100%;
             background: transparent;
             overflow: hidden;
-            font-family: 'Playfair Display', Georgia, serif;
+            /* Aplicando a fonte nova em todo o widget */
+            font-family: 'Quicksand', sans-serif;
         }
 
         .centrador {
@@ -101,9 +102,8 @@
 
         #mode {
             font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-weight: 600;
+            letter-spacing: 0.15em;
+            font-weight: 700;
             margin-bottom: 15px;
             color: rgba(201, 184, 232, 0.9);
         }
@@ -138,10 +138,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            /* Ajuste óptico fino para a nova fonte menor */
             margin-top: -2px; 
-            font-size: 2.6rem; /* FONTE REDUZIDA AQUI */
-            font-weight: 600;
+            font-size: 2.6rem; 
+            font-weight: 700;
             line-height: 1;
             color: #a58fd6; 
             z-index: 10; 
@@ -159,7 +158,6 @@
             font-weight: 600;
             cursor: pointer;
             color: #a58fd6;
-            text-transform: lowercase; /* Deixando o texto do lofi minúsculo também */
         }
         .lofi-toggle-container input {
             accent-color: #c9b8e8;
@@ -181,7 +179,7 @@
             padding: 8px 14px;
             border-radius: 8px; 
             font-family: inherit;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.85rem;
             cursor: pointer;
             transition: transform 0.1s ease, box-shadow 0.2s ease;
@@ -213,13 +211,13 @@
         }
 
         #clear-tomatoes {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: rgba(201, 184, 232, 0.7);
             background: none;
             border: none;
             padding: 0;
             cursor: pointer;
-            font-weight: 400;
+            font-weight: 600;
             text-decoration: underline;
         }
         #clear-tomatoes:hover { color: #a58fd6; }
@@ -250,7 +248,7 @@
                 <button class="btn-save" id="btn-save">salvar tempos</button>
             </div>
 
-            <div id="mode">Tempo de Foco</div>
+            <div id="mode">tempo de foco</div>
             
             <div class="timer-container">
                 <svg class="progress-ring" width="180" height="180">
@@ -385,12 +383,12 @@
                 isWorkMode = false;
                 totalTime = BREAK_TIME * 60;
                 timeLeft = totalTime;
-                modeDisplay.textContent = 'Tempo de Pausa'; // Ajustado sutilmente
+                modeDisplay.textContent = 'tempo de pausa'; 
             } else {
                 isWorkMode = true;
                 totalTime = WORK_TIME * 60;
                 timeLeft = totalTime;
-                modeDisplay.textContent = 'Tempo de Foco';
+                modeDisplay.textContent = 'tempo de foco';
             }
             updateDisplay();
         }
@@ -435,7 +433,7 @@
             isWorkMode = true;
             totalTime = WORK_TIME * 60; 
             timeLeft = totalTime;
-            modeDisplay.textContent = 'Tempo de Foco';
+            modeDisplay.textContent = 'tempo de foco';
             handleMusic('pause');
             updateDisplay();
         });
