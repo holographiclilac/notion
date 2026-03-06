@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sazonalidade - Itajubá</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .centrador {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            width: 320px;
+            max-height: 95%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- CABEÇALHO DO MÊS --- */
+        .header {
+            background-color: #c9b8e8;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .header button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .header button:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .month-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- CORPO DA LISTA --- */
+        .content {
+            padding: 15px 20px 25px 20px;
+            overflow-y: auto; /* Permite rolar se a lista for muito longa */
+            scrollbar-width: none; /* Esconde a barra no Firefox */
+        }
+        .content::-webkit-scrollbar {
+            display: none; /* Esconde a barra no Chrome/Safari */
+        }
+
+        .category-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #a58fd6;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .category-title:first-child {
+            margin-top: 0;
+        }
+
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .item-pill {
+            background-color: #f4f0fa;
+            color: #8c73c8;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(201, 184, 232, 0.3);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            cursor: default;
+        }
+
+        .item-pill:hover {
+            background-color: #e3d8f8;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            <div class="header">
+                <button id="btn-prev">❮</button>
+                <div class="month-name" id="month-display">Janeiro</div>
+                <button id="btn-next">❯</button>
+            </div>
+            
+            <div class="content" id="content-display">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados sazonal adaptado para o Sul de Minas / Mantiqueira
+        const seasonalData = [
+            {
+                month: "Janeiro",
+                frutas: ["Abacaxi", "Manga", "Melancia", "Uva", "Maracujá", "Limão"],
+                verduras: ["Alface", "Cebolinha", "Hortelã", "Rúcula", "Salsa"],
+                legumes: ["Abóbora", "Milho verde", "Pimentão", "Quiabo", "Tomate"],
+                oleaginosas: ["Semente de abóbora"],
+                flores: ["Girassol", "Orquídea", "Boca-de-leão"]
+            },
+            {
+                month: "Fevereiro",
+                frutas: ["Abacate", "Ameixa", "Pêssego", "Goiaba", "Figo"],
+                verduras: ["Couve", "Repolho", "Hortelã", "Salsa"],
+                legumes: ["Berinjela", "Chuchu", "Pepino", "Tomate"],
+                oleaginosas: ["Castanha-do-pará", "Gergelim"],
+                flores: ["Lírio", "Angélica", "Cravina"]
+            },
+            {
+                month: "Março",
+                frutas: ["Abacate", "Banana", "Caqui", "Limão", "Maçã", "Pera"],
+                verduras: ["Acelga", "Alho-poró", "Rúcula", "Escarola"],
+                legumes: ["Abóbora", "Chuchu", "Jiló", "Mandioca"],
+                oleaginosas: ["Noz-pecã", "Amendoim"],
+                flores: ["Margarida", "Gérbera", "Cravo"]
+            },
+            {
+                month: "Abril",
+                frutas: ["Caqui", "Maçã", "Tangerina", "Pera", "Kiwi"],
+                verduras: ["Alface", "Chicória", "Espinafre", "Mostarda"],
+                legumes: ["Batata-doce", "Mandioca", "Nabo", "Inhame"],
+                oleaginosas: ["Amendoim", "Noz-pecã"],
+                flores: ["Crisântemo", "Antúrio", "Gladíolo"]
+            },
+            {
+                month: "Maio",
+                frutas: ["Kiwi", "Mexerica", "Ponkan", "Laranja-lima"],
+                verduras: ["Agrião", "Couve", "Mostarda", "Espinafre"],
+                legumes: ["Ervilha", "Inhame", "Mandioquinha", "Cenoura"],
+                oleaginosas: ["Pinhão", "Semente de girassol"],
+                flores: ["Azaleia", "Camélia", "Hortênsia"]
+            },
+            {
+                month: "Junho",
+                frutas: ["Morango", "Laranja", "Mexerica", "Ponkan", "Carambola"],
+                verduras: ["Brócolis", "Espinafre", "Agrião", "Couve"],
+                legumes: ["Batata-doce", "Cenoura", "Mandioca", "Ervilha"],
+                oleaginosas: ["Pinhão", "Amendoim (Festas Juninas)"],
+                flores: ["Camélia", "Tulipa", "Orquídea Cymbidium"]
+            },
+            {
+                month: "Julho",
+                frutas: ["Laranja", "Morango", "Tangerina", "Kiwi"],
+                verduras: ["Agrião", "Couve", "Rabanete", "Escarola"],
+                legumes: ["Ervilha", "Cenoura", "Inhame", "Mandioquinha"],
+                oleaginosas: ["Pinhão", "Nozes", "Castanhas"],
+                flores: ["Tulipa", "Ipê-roxo", "Amor-perfeito"]
+            },
+            {
+                month: "Agosto",
+                frutas: ["Banana", "Caju", "Morango", "Maracujá"],
+                verduras: ["Brócolis", "Couve-flor", "Escarola", "Alho-poró"],
+                legumes: ["Abobrinha", "Pimentão", "Ervilha"],
+                oleaginosas: ["Castanha-de-caju", "Amendoim"],
+                flores: ["Ipê-amarelo", "Copo-de-leite", "Gérbera"]
+            },
+            {
+                month: "Setembro",
+                frutas: ["Jabuticaba", "Caju", "Melão", "Amora", "Pitanga"],
+                verduras: ["Alho-poró", "Espinafre", "Chicória"],
+                legumes: ["Alcachofra", "Berinjela", "Vagem"],
+                oleaginosas: ["Castanha-do-pará", "Semente de abóbora"],
+                flores: ["Primavera (Bougainvillea)", "Girassol", "Ipê-branco"]
+            },
+            {
+                month: "Outubro",
+                frutas: ["Acerola", "Jabuticaba", "Manga", "Melão", "Pêssego"],
+                verduras: ["Alface", "Rúcula", "Manjericão", "Cebolinha"],
+                legumes: ["Abobrinha", "Tomate", "Pepino"],
+                oleaginosas: ["Gergelim", "Linhaça"],
+                flores: ["Orquídea", "Rosa", "Lírio"]
+            },
+            {
+                month: "Novembro",
+                frutas: ["Abacaxi", "Mamão", "Melancia", "Manga", "Amora"],
+                verduras: ["Cebolinha", "Hortelã", "Salsa", "Alface"],
+                legumes: ["Pepino", "Tomate", "Milho verde", "Berinjela"],
+                oleaginosas: ["Linhaça", "Castanha-de-caju"],
+                flores: ["Hortênsia", "Gérbera", "Dália"]
+            },
+            {
+                month: "Dezembro",
+                frutas: ["Ameixa", "Cereja", "Lichia", "Pêssego", "Uva"],
+                verduras: ["Alface", "Rúcula", "Salsa", "Cebolinha"],
+                legumes: ["Pimentão", "Cenoura", "Vagem", "Quiabo"],
+                oleaginosas: ["Nozes", "Castanhas", "Amêndoas (Natal)"],
+                flores: ["Lírio", "Copo-de-leite", "Bico-de-papagaio"]
+            }
+        ];
+
+        let currentMonthIndex = new Date().getMonth(); // Pega o mês atual do seu computador (0 = Janeiro, 11 = Dezembro)
+
+        const monthDisplay = document.getElementById('month-display');
+        const contentDisplay = document.getElementById('content-display');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function generatePills(items) {
+            return items.map(item => `<span class="item-pill">${item}</span>`).join('');
+        }
+
+        function renderMonth(index) {
+            const data = seasonalData[index];
+            monthDisplay.textContent = data.month;
+
+            contentDisplay.innerHTML = `
+                <div class="category-title">🍉 Frutas</div>
+                <div class="items-container">${generatePills(data.frutas)}</div>
+
+                <div class="category-title">🥬 Verduras</div>
+                <div class="items-container">${generatePills(data.verduras)}</div>
+
+                <div class="category-title">🥕 Legumes</div>
+                <div class="items-container">${generatePills(data.legumes)}</div>
+
+                <div class="category-title">🌰 Oleaginosas e Sementes</div>
+                <div class="items-container">${generatePills(data.oleaginosas)}</div>
+
+                <div class="category-title">🌸 Flores</div>
+                <div class="items-container">${generatePills(data.flores)}</div>
+            `;
+        }
+
+        btnPrev.addEventListener('click', () => {
+            currentMonthIndex = (currentMonthIndex === 0) ? 11 : currentMonthIndex - 1;
+            renderMonth(currentMonthIndex);
+        });
+
+        btnNext.addEventListener('click', () => {
+            currentMonthIndex = (currentMonthIndex === 11) ? 0 : currentMonthIndex + 1;
+            renderMonth(currentMonthIndex);
+        });
+
+        // Inicializa mostrando o mês atual
+        renderMonth(currentMonthIndex);
+    </script>
+</body>
+</html>
