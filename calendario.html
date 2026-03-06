@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+        <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -42,11 +43,8 @@
             width: 350px; 
             font-size: 14px;
             position: relative;
-            
-            /* --- REDUÇÃO DE 25% APLICADA AQUI --- */
             transform: scale(0.75);
             transform-origin: center; 
-            /* ------------------------------------ */
         }
 
         table {
@@ -135,6 +133,7 @@
             background: #e3d8f8;
             color: #a58fd6;
             cursor: pointer;
+            border-radius: 4px; /* Deixa a marcação redondinha ao passar o mouse */
         }
 
         .boto-next, .boto-prev {
@@ -155,4 +154,74 @@
             transition: background 0.3s;
         }
 
-        .boto-next { right: 10px; padding-left: 1
+        .boto-next { right: 10px; padding-left: 13px; }
+        .boto-prev { left: 10px; padding-right: 13px;}
+        
+        .boto-next:hover,
+        .boto-prev:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        button:hover { cursor: pointer; }
+        button:focus { outline: none; }
+
+    </style>
+</head>
+<body>
+    <div id="calendari"></div>
+
+    <script>
+        var mesos = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        var dies_abr = [
+            'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
+        ];
+
+        Number.prototype.pad = function(num) {
+            var str = '';
+            for(var i = 0; i < (num-this.toString().length); i++)
+                str += '0';
+            return str += this.toString();
+        }
+
+        function calendari(widget, data) {
+            var original = widget.getElementsByClassName('actiu')[0];
+
+            if(typeof original === 'undefined') {
+                original = document.createElement('table');
+                original.setAttribute('data-actual',
+                      data.getFullYear() + '/' +
+                      data.getMonth().pad(2) + '/' +
+                      data.getDate().pad(2))
+                widget.appendChild(original);
+            }
+
+            var diff = data - new Date(original.getAttribute('data-actual'));
+            diff = new Date(diff).getMonth();
+
+            var e = document.createElement('table');
+            e.className = diff  === 0 ? 'amagat-esquerra' : 'amagat-dreta';
+            e.innerHTML = '';
+            widget.appendChild(e);
+
+            e.setAttribute('data-actual',
+                           data.getFullYear() + '/' +
+                           data.getMonth().pad(2) + '/' +
+                           data.getDate().pad(2))
+
+            var fila = document.createElement('tr');
+            var titol = document.createElement('th');
+            titol.setAttribute('colspan', 7);
+
+            var boto_prev = document.createElement('button');
+            boto_prev.className = 'boto-prev';
+            boto_prev.innerHTML = '&#9666;';
+
+            var boto_next = document.createElement('button');
+            boto_next.className = 'boto-next';
+            boto_next.innerHTML = '&#9656;';
+
+            titol
