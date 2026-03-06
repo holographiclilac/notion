@@ -108,14 +108,13 @@
             color: rgba(201, 184, 232, 0.9);
         }
 
+        /* --- ALINHAMENTO MATEMÁTICO DO CÍRCULO E NÚMERO --- */
         .timer-container {
             position: relative;
             width: 180px;
             height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             margin-bottom: 20px;
+            /* Tiramos o flexbox daqui para usar o posicionamento absoluto perfeito */
         }
 
         .progress-ring {
@@ -124,9 +123,11 @@
             transform: rotate(-90deg); 
             transform-origin: center;
         }
+        
         .progress-ring__circle-bg {
             stroke: rgba(201, 184, 232, 0.1); 
         }
+        
         .progress-ring__circle {
             stroke: #c9b8e8; 
             stroke-linecap: round; 
@@ -134,13 +135,21 @@
         }
 
         #timer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Força o centro exato dos eixos X e Y */
+            transform: translate(-50%, -50%);
+            /* Ajuste óptico fino para compensar o peso da fonte na base */
+            margin-top: -3px; 
             font-size: 3.2rem;
             font-weight: 600;
             line-height: 1;
             color: #a58fd6; 
-            position: relative;
             z-index: 10; 
+            text-align: center;
         }
+        /* --------------------------------------------------- */
 
         /* Switch Lofi */
         .lofi-toggle-container {
@@ -177,7 +186,7 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: transform 0.1s ease, box-shadow 0.2s ease;
-            flex: 1 1 40%; /* Faz os botões ficarem em grid 2x2 */
+            flex: 1 1 40%; 
         }
         button.ctrl-btn:active { transform: scale(0.96); }
 
@@ -216,7 +225,6 @@
         }
         #clear-tomatoes:hover { color: #a58fd6; }
 
-        /* Esconde o iframe do YouTube */
         #youtube-player-container {
             position: absolute;
             width: 0; height: 0;
@@ -272,12 +280,7 @@
         </div>
     </div>
 
-    <div id="youtube-player-container">
-        <div id="yt-player"></div>
-    </div>
-
     <script>
-        // --- 1. CONFIGURAÇÕES E MEMÓRIA ---
         let WORK_TIME = localStorage.getItem('pomoWorkTime') ? parseInt(localStorage.getItem('pomoWorkTime')) : 25;
         let BREAK_TIME = localStorage.getItem('pomoBreakTime') ? parseInt(localStorage.getItem('pomoBreakTime')) : 5;
         let completedSessions = localStorage.getItem('pomodoroTomatoes') ? parseInt(localStorage.getItem('pomodoroTomatoes')) : 0;
@@ -290,13 +293,11 @@
         let timerId = null;
         let isWorkMode = true;
 
-        // Elementos da Tela
         const timerDisplay = document.getElementById('timer');
         const modeDisplay = document.getElementById('mode');
         const tomatoesDisplay = document.getElementById('tomatoes');
         const lofiToggle = document.getElementById('lofi-toggle');
 
-        // --- 2. SINTETIZADOR DE SONS (Web Audio API) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         function playTone(frequency, type, duration, delay = 0) {
@@ -308,7 +309,6 @@
                 osc.type = type;
                 osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
                 
-                // Suaviza o som para não assustar (fade in e fade out rápido)
                 gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
                 gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
@@ -322,24 +322,21 @@
         }
 
         function play1MinWarning() {
-            // Plim-Plim suave
             playTone(600, 'sine', 0.4, 0);
             playTone(600, 'sine', 0.4, 300);
         }
 
         function playPhaseEnd() {
-            // Três notas felizes subindo
-            playTone(440, 'sine', 0.3, 0);     // Lá
-            playTone(554.37, 'sine', 0.3, 200); // Dó#
-            playTone(659.25, 'sine', 0.6, 400); // Mi
+            playTone(440, 'sine', 0.3, 0);    
+            playTone(554.37, 'sine', 0.3, 200); 
+            playTone(659.25, 'sine', 0.6, 400); 
         }
 
-        // --- 3. RÁDIO LO-FI (YouTube API) ---
         let ytPlayer;
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('yt-player', {
                 height: '10', width: '10',
-                videoId: 'jfKfPfyJRdk', // Live da Lofi Girl (24/7)
+                videoId: 'jfKfPfyJRdk', 
                 playerVars: { 'autoplay': 0, 'controls': 0, 'showinfo': 0, 'rel': 0 },
             });
         }
@@ -347,17 +344,16 @@
         function handleMusic(action) {
             if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
             if (action === 'play' && lofiToggle.checked && isWorkMode) {
-                ytPlayer.setVolume(35); // Volume agradável de fundo
+                ytPlayer.setVolume(35);
                 ytPlayer.playVideo();
             } else {
                 ytPlayer.pauseVideo();
             }
         }
 
-        // --- 4. LÓGICA DO PROGRESSO VISUAL ---
         const circle = document.querySelector('.progress-ring__circle');
         const radius = circle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius; // ~502
+        const circumference = 2 * Math.PI * radius; 
 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = circumference; 
@@ -379,12 +375,10 @@
             document.getElementById('clear-tomatoes').style.display = completedSessions > 0 ? 'block' : 'none';
         }
 
-        // --- 5. LÓGICA DO TEMPORIZADOR ---
         function toggleMode() {
-            handleMusic('pause'); // Para a música ao trocar de fase
+            handleMusic('pause'); 
             
             if (isWorkMode) {
-                // Ganha tomate!
                 completedSessions++;
                 localStorage.setItem('pomodoroTomatoes', completedSessions);
                 renderTomatoes();
@@ -403,21 +397,20 @@
         }
 
         document.getElementById('btn-start').addEventListener('click', () => {
-            if (audioCtx.state === 'suspended') audioCtx.resume(); // Libera o som no navegador
+            if (audioCtx.state === 'suspended') audioCtx.resume(); 
             if (timerId !== null) return; 
             
-            handleMusic('play'); // Toca a música se estiver no Foco e o Lofi ativado
+            handleMusic('play'); 
 
             timerId = setInterval(() => {
                 timeLeft--;
                 
-                // Verifica Sons
-                if (timeLeft === 60) play1MinWarning(); // Faltando exatamente 1 min
+                if (timeLeft === 60) play1MinWarning(); 
                 
                 if (timeLeft < 0) {
                     clearInterval(timerId);
                     timerId = null;
-                    playPhaseEnd(); // Som de fim de ciclo
+                    playPhaseEnd(); 
                     toggleMode();
                 } else {
                     updateDisplay();
@@ -454,7 +447,6 @@
             renderTomatoes();
         });
 
-        // --- 6. LÓGICA DE CONFIGURAÇÕES ---
         document.getElementById('btn-settings').addEventListener('click', () => {
             document.getElementById('settings-panel').classList.toggle('active');
         });
@@ -469,13 +461,11 @@
                 localStorage.setItem('pomoWorkTime', WORK_TIME);
                 localStorage.setItem('pomoBreakTime', BREAK_TIME);
                 
-                // Fecha painel e reseta o timer com os novos tempos
                 document.getElementById('settings-panel').classList.remove('active');
                 document.getElementById('btn-reset').click(); 
             }
         });
 
-        // Inicia
         updateDisplay();
         renderTomatoes();
     </script>
