@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
 
     <style>
-        /* Reseta a página para evitar bordas e rolagens fantasma no Notion */
         html, body {
             margin: 0;
             padding: 0;
@@ -19,7 +18,6 @@
             font-family: 'Playfair Display', Georgia, serif;
         }
 
-        /* Força a centralização no embed do Notion */
         .centrador {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -28,19 +26,77 @@
             justify-content: center;
         }
 
-        /* A caixinha principal do Pomodoro - Mais arredondada */
         .pomodoro-box {
             background-color: #ffffff;
-            border-radius: 16px; /* Cantos mais suaves e 'fofos' */
-            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); /* Sombra mais suave e lilás */
-            padding: 35px;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            padding: 25px 35px;
             text-align: center;
-            width: 280px;
-            color: #c9b8e8; /* Textos gerais em lilás */
+            width: 300px;
+            color: #c9b8e8; 
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
+        }
+
+        /* Botão de Configurações */
+        .btn-settings {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: rgba(201, 184, 232, 0.7);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .btn-settings:hover {
+            color: #a58fd6;
+            transform: rotate(90deg);
+        }
+
+        /* Painel de Configurações Oculto */
+        .settings-panel {
+            display: none;
+            width: 100%;
+            background: #fcfaff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(201, 184, 232, 0.3);
+        }
+        .settings-panel.active {
+            display: block;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .input-group input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #c9b8e8;
+            border-radius: 4px;
+            text-align: center;
+            color: #a58fd6;
+            font-weight: bold;
+            font-family: inherit;
+        }
+        .btn-save {
+            width: 100%;
+            background: #c9b8e8;
+            color: white;
+            border: none;
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
         }
 
         #mode {
@@ -48,122 +104,108 @@
             text-transform: uppercase;
             letter-spacing: 0.2em;
             font-weight: 600;
-            margin-bottom: 10px;
-            color: rgba(201, 184, 232, 0.8);
+            margin-bottom: 15px;
+            color: rgba(201, 184, 232, 0.9);
         }
 
-        /* --- CONTAINER DO TIMER COM CÍRCULO VISUAL --- */
         .timer-container {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        /* O Círculo SVG de progresso */
         .progress-ring {
             position: absolute;
-            top: 0;
-            left: 0;
-            transform: rotate(-90deg); /* Começa no topo */
+            top: 0; left: 0;
+            transform: rotate(-90deg); 
             transform-origin: center;
         }
-
         .progress-ring__circle-bg {
-            stroke: rgba(201, 184, 232, 0.1); /* Fundo sutil do círculo */
+            stroke: rgba(201, 184, 232, 0.1); 
         }
-
         .progress-ring__circle {
-            stroke: #c9b8e8; /* Cor do progresso (lilás principal) */
-            stroke-linecap: round; /* Pontas arredondadas na barra */
-            transition: stroke-dashoffset 0.3s linear; /* Animação suave */
+            stroke: #c9b8e8; 
+            stroke-linecap: round; 
+            transition: stroke-dashoffset 0.3s linear; 
         }
 
         #timer {
-            font-size: 3.8rem;
+            font-size: 3.2rem;
             font-weight: 600;
             line-height: 1;
-            color: #a58fd6; /* Número em destaque */
+            color: #a58fd6; 
             position: relative;
-            z-index: 10; /* Garante que fique sobre o círculo */
+            z-index: 10; 
         }
 
-        /* --- BOTÕES COM CORES PASTÉIS --- */
+        /* Switch Lofi */
+        .lofi-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #a58fd6;
+        }
+        .lofi-toggle-container input {
+            accent-color: #c9b8e8;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
         .controls {
             display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         button.ctrl-btn {
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px; /* Cantos mais suaves */
+            padding: 8px 14px;
+            border-radius: 8px; 
             font-family: inherit;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            flex: 1 1 40%; /* Faz os botões ficarem em grid 2x2 */
         }
+        button.ctrl-btn:active { transform: scale(0.96); }
 
-        /* Efeito de clique físico 'fofo' */
-        button.ctrl-btn:active {
-            transform: scale(0.96);
-        }
+        /* Cores Pastéis dos Botões */
+        #btn-start { color: #6bc295; background-color: #e0f7ea; }
+        #btn-pause { color: #e69d73; background-color: #fff3e6; }
+        #btn-reset { color: #e6a0a0; background-color: #ffe5e5; }
+        #btn-skip  { color: #9a80d4; background-color: #eee8fc; } 
 
-        /* Iniciar - Verde Menta Pastel */
-        #btn-start {
-            color: #6bc295; /* Texto verde menta escuro */
-            background-color: #e0f7ea; /* Fundo menta pastel */
-        }
-        #btn-start:hover {
-            background-color: #bdfcc9;
-            box-shadow: 0 2px 8px rgba(189, 252, 201, 0.4);
-        }
-
-        /* Pausar - Pêssego Pastel */
-        #btn-pause {
-            color: #e69d73; /* Texto pêssego escuro */
-            background-color: #fff3e6; /* Fundo pêssego pastel */
-        }
-        #btn-pause:hover {
-            background-color: #ffe0c0;
-            box-shadow: 0 2px 8px rgba(255, 224, 192, 0.4);
-        }
-
-        /* Zerar - Rosa Chá Pastel */
-        #btn-reset {
-            color: #e6a0a0; /* Texto rosa chá escuro */
-            background-color: #ffe5e5; /* Fundo rosa pastel */
-        }
-        #btn-reset:hover {
-            background-color: #ffcccc;
-            box-shadow: 0 2px 8px rgba(255, 204, 204, 0.4);
-        }
-
-        /* --- ESTANTE DE TOMATES --- */
         .tracker-container {
             width: 100%;
-            min-height: 50px;
+            min-height: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border-top: 1px solid rgba(201, 184, 232, 0.2);
-            padding-top: 15px;
+            padding-top: 10px;
         }
 
         #tomatoes {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             letter-spacing: 3px;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         #clear-tomatoes {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: rgba(201, 184, 232, 0.7);
             background: none;
             border: none;
@@ -172,156 +214,268 @@
             font-weight: 400;
             text-decoration: underline;
         }
-        
-        #clear-tomatoes:hover {
-            color: #a58fd6;
-            background: none;
-        }
+        #clear-tomatoes:hover { color: #a58fd6; }
 
+        /* Esconde o iframe do YouTube */
+        #youtube-player-container {
+            position: absolute;
+            width: 0; height: 0;
+            overflow: hidden;
+        }
     </style>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
-    
     <div class="centrador">
         <div class="pomodoro-box">
+            <button class="btn-settings" id="btn-settings" title="Configurações">⚙️</button>
+            
+            <div class="settings-panel" id="settings-panel">
+                <div class="input-group">
+                    <label>Foco (min):</label>
+                    <input type="number" id="input-work" min="1" max="120" value="25">
+                </div>
+                <div class="input-group">
+                    <label>Pausa (min):</label>
+                    <input type="number" id="input-break" min="1" max="60" value="5">
+                </div>
+                <button class="btn-save" id="btn-save">Salvar Tempos</button>
+            </div>
+
             <div id="mode">Tempo de Foco</div>
             
             <div class="timer-container">
-                <svg class="progress-ring" width="200" height="200">
-                    <circle class="progress-ring__circle-bg" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
-                    <circle class="progress-ring__circle" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                <svg class="progress-ring" width="180" height="180">
+                    <circle class="progress-ring__circle-bg" stroke-width="8" fill="transparent" r="80" cx="90" cy="90"/>
+                    <circle class="progress-ring__circle" stroke-width="8" fill="transparent" r="80" cx="90" cy="90"/>
                 </svg>
                 <div id="timer">25:00</div>
             </div>
+
+            <label class="lofi-toggle-container">
+                <input type="checkbox" id="lofi-toggle" checked>
+                🎧 Rádio Lofi Automática
+            </label>
             
             <div class="controls">
-                <button id="btn-start" class="ctrl-btn">Iniciar</button>
-                <button id="btn-pause" class="ctrl-btn">Pausar</button>
-                <button id="btn-reset" class="ctrl-btn">Zerar</button>
+                <button id="btn-start" class="ctrl-btn">▶ Iniciar</button>
+                <button id="btn-pause" class="ctrl-btn">⏸ Pausar</button>
+                <button id="btn-skip" class="ctrl-btn">⏭ Pular</button>
+                <button id="btn-reset" class="ctrl-btn">🔄 Zerar</button>
             </div>
 
             <div class="tracker-container">
                 <div id="tomatoes"></div>
-                <button id="clear-tomatoes">Limpar tomates diários</button>
+                <button id="clear-tomatoes">Limpar tomates</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // Configurações de tempo (em minutos)
-        const WORK_TIME = 25;
-        const BREAK_TIME = 5;
+    <div id="youtube-player-container">
+        <div id="yt-player"></div>
+    </div>
 
-        let totalTime = WORK_TIME * 60; // Tempo total do modo atual em segundos
+    <script>
+        // --- 1. CONFIGURAÇÕES E MEMÓRIA ---
+        let WORK_TIME = localStorage.getItem('pomoWorkTime') ? parseInt(localStorage.getItem('pomoWorkTime')) : 25;
+        let BREAK_TIME = localStorage.getItem('pomoBreakTime') ? parseInt(localStorage.getItem('pomoBreakTime')) : 5;
+        let completedSessions = localStorage.getItem('pomodoroTomatoes') ? parseInt(localStorage.getItem('pomodoroTomatoes')) : 0;
+
+        document.getElementById('input-work').value = WORK_TIME;
+        document.getElementById('input-break').value = BREAK_TIME;
+
+        let totalTime = WORK_TIME * 60; 
         let timeLeft = totalTime; 
         let timerId = null;
         let isWorkMode = true;
-        
-        // Recupera os tomates salvos no navegador ou começa com 0
-        let completedSessions = localStorage.getItem('pomodoroTomatoes') ? parseInt(localStorage.getItem('pomodoroTomatoes')) : 0;
 
+        // Elementos da Tela
         const timerDisplay = document.getElementById('timer');
         const modeDisplay = document.getElementById('mode');
         const tomatoesDisplay = document.getElementById('tomatoes');
-        
-        const btnStart = document.getElementById('btn-start');
-        const btnPause = document.getElementById('btn-pause');
-        const btnReset = document.getElementById('btn-reset');
-        const btnClearTomatoes = document.getElementById('clear-tomatoes');
+        const lofiToggle = document.getElementById('lofi-toggle');
 
-        // Configuração do Círculo de Progresso (SVG)
+        // --- 2. SINTETIZADOR DE SONS (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(frequency, type, duration, delay = 0) {
+            setTimeout(() => {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                
+                // Suaviza o som para não assustar (fade in e fade out rápido)
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            }, delay);
+        }
+
+        function play1MinWarning() {
+            // Plim-Plim suave
+            playTone(600, 'sine', 0.4, 0);
+            playTone(600, 'sine', 0.4, 300);
+        }
+
+        function playPhaseEnd() {
+            // Três notas felizes subindo
+            playTone(440, 'sine', 0.3, 0);     // Lá
+            playTone(554.37, 'sine', 0.3, 200); // Dó#
+            playTone(659.25, 'sine', 0.6, 400); // Mi
+        }
+
+        // --- 3. RÁDIO LO-FI (YouTube API) ---
+        let ytPlayer;
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '10', width: '10',
+                videoId: 'jfKfPfyJRdk', // Live da Lofi Girl (24/7)
+                playerVars: { 'autoplay': 0, 'controls': 0, 'showinfo': 0, 'rel': 0 },
+            });
+        }
+
+        function handleMusic(action) {
+            if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
+            if (action === 'play' && lofiToggle.checked && isWorkMode) {
+                ytPlayer.setVolume(35); // Volume agradável de fundo
+                ytPlayer.playVideo();
+            } else {
+                ytPlayer.pauseVideo();
+            }
+        }
+
+        // --- 4. LÓGICA DO PROGRESSO VISUAL ---
         const circle = document.querySelector('.progress-ring__circle');
         const radius = circle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius; // ~565.48
+        const circumference = 2 * Math.PI * radius; // ~502
 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = circumference; // Começa vazio (mas invertemos na lógica)
+        circle.style.strokeDashoffset = circumference; 
 
         function setProgress(percent) {
-            // percent deve ser entre 0 e 1
-            // Invertemos a lógica: 1 = cheio (offset 0), 0 = vazio (offset total)
             const offset = circumference * (1 - percent);
             circle.style.strokeDashoffset = offset;
         }
 
         function updateDisplay() {
-            // Atualiza o texto numérico
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            // Atualiza o progresso visual do círculo
-            const progressPercent = timeLeft / totalTime;
-            setProgress(progressPercent);
+            setProgress(timeLeft / totalTime);
         }
 
         function renderTomatoes() {
             tomatoesDisplay.innerHTML = '🍅'.repeat(completedSessions);
-            btnClearTomatoes.style.display = completedSessions > 0 ? 'block' : 'none';
+            document.getElementById('clear-tomatoes').style.display = completedSessions > 0 ? 'block' : 'none';
         }
 
+        // --- 5. LÓGICA DO TEMPORIZADOR ---
         function toggleMode() {
+            handleMusic('pause'); // Para a música ao trocar de fase
+            
             if (isWorkMode) {
-                // Terminou o Foco -> Adiciona Tomate e vai pra Pausa
+                // Ganha tomate!
                 completedSessions++;
                 localStorage.setItem('pomodoroTomatoes', completedSessions);
                 renderTomatoes();
                 
                 isWorkMode = false;
-                totalTime = BREAK_TIME * 60; // Define o novo tempo total
+                totalTime = BREAK_TIME * 60;
                 timeLeft = totalTime;
                 modeDisplay.textContent = 'Pausa Curta';
             } else {
-                // Terminou a Pausa -> Vai pro Foco
                 isWorkMode = true;
-                totalTime = WORK_TIME * 60; // Define o novo tempo total
+                totalTime = WORK_TIME * 60;
                 timeLeft = totalTime;
                 modeDisplay.textContent = 'Tempo de Foco';
             }
             updateDisplay();
         }
 
-        btnStart.addEventListener('click', () => {
-            if (timerId !== null) return; // Se já estiver rodando, não faz nada
+        document.getElementById('btn-start').addEventListener('click', () => {
+            if (audioCtx.state === 'suspended') audioCtx.resume(); // Libera o som no navegador
+            if (timerId !== null) return; 
             
-            // Efeito visual no botão ao iniciar
-            btnStart.style.transform = "scale(0.98)";
-            setTimeout(() => btnStart.style.transform = "scale(1)", 100);
+            handleMusic('play'); // Toca a música se estiver no Foco e o Lofi ativado
 
             timerId = setInterval(() => {
                 timeLeft--;
+                
+                // Verifica Sons
+                if (timeLeft === 60) play1MinWarning(); // Faltando exatamente 1 min
+                
                 if (timeLeft < 0) {
                     clearInterval(timerId);
                     timerId = null;
+                    playPhaseEnd(); // Som de fim de ciclo
                     toggleMode();
                 } else {
                     updateDisplay();
                 }
-            }, 1000); // 1000 milissegundos = 1 segundo
+            }, 1000); 
         });
 
-        btnPause.addEventListener('click', () => {
+        document.getElementById('btn-pause').addEventListener('click', () => {
             clearInterval(timerId);
             timerId = null;
+            handleMusic('pause');
         });
 
-        btnReset.addEventListener('click', () => {
+        document.getElementById('btn-skip').addEventListener('click', () => {
+            clearInterval(timerId);
+            timerId = null;
+            toggleMode(); 
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
             clearInterval(timerId);
             timerId = null;
             isWorkMode = true;
-            totalTime = WORK_TIME * 60; // Reseta o tempo total
+            totalTime = WORK_TIME * 60; 
             timeLeft = totalTime;
             modeDisplay.textContent = 'Tempo de Foco';
+            handleMusic('pause');
             updateDisplay();
         });
 
-        btnClearTomatoes.addEventListener('click', () => {
+        document.getElementById('clear-tomatoes').addEventListener('click', () => {
             completedSessions = 0;
             localStorage.setItem('pomodoroTomatoes', 0);
             renderTomatoes();
         });
 
-        // Inicializa a tela com o progresso cheio (100%)
+        // --- 6. LÓGICA DE CONFIGURAÇÕES ---
+        document.getElementById('btn-settings').addEventListener('click', () => {
+            document.getElementById('settings-panel').classList.toggle('active');
+        });
+
+        document.getElementById('btn-save').addEventListener('click', () => {
+            let newWork = parseInt(document.getElementById('input-work').value);
+            let newBreak = parseInt(document.getElementById('input-break').value);
+            
+            if (newWork > 0 && newBreak > 0) {
+                WORK_TIME = newWork;
+                BREAK_TIME = newBreak;
+                localStorage.setItem('pomoWorkTime', WORK_TIME);
+                localStorage.setItem('pomoBreakTime', BREAK_TIME);
+                
+                // Fecha painel e reseta o timer com os novos tempos
+                document.getElementById('settings-panel').classList.remove('active');
+                document.getElementById('btn-reset').click(); 
+            }
+        });
+
+        // Inicia
         updateDisplay();
         renderTomatoes();
     </script>
