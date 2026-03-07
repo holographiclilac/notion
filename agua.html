@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Hidratação e Saúde</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+
+        .centrador {
+            display: flex;
+            align-items: flex-start; 
+            justify-content: center;
+            padding: 15px 10px; 
+            width: 100%;
+        }
+
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #8c73c8;
+        }
+
+        /* --- CABEÇALHO --- */
+        .header {
+            background-color: #c9b8e8;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: lowercase;
+        }
+
+        /* --- SEÇÃO DE ÁGUA --- */
+        .water-section {
+            padding: 20px;
+            border-bottom: 1px solid rgba(201, 184, 232, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fcfaff;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #a58fd6;
+            margin-bottom: 12px;
+            text-transform: lowercase;
+            width: 100%;
+            text-align: left;
+        }
+
+        .drops-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .drop {
+            width: 22px;
+            height: 22px;
+            border-radius: 50% 50% 50% 5px; 
+            transform: rotate(-45deg); 
+            border: 2px solid #c9b8e8;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .drop:hover {
+            transform: rotate(-45deg) scale(1.1);
+        }
+
+        .drop.filled {
+            background-color: #a58fd6;
+            border-color: #a58fd6;
+            box-shadow: 0 0 8px rgba(165, 143, 214, 0.4);
+        }
+
+        /* --- SEÇÃO DE MEDICAMENTOS --- */
+        .meds-section {
+            padding: 20px;
+            padding-bottom: 10px; /* Reduzi um pouco pra caber o botão embaixo */
+        }
+
+        .time-block {
+            margin-bottom: 18px;
+        }
+
+        .time-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .time-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: rgba(165, 143, 214, 0.7);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .task-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #c9b8e8;
+            border-radius: 50%; 
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .task-item.done .task-checkbox {
+            background-color: #a58fd6;
+            border-color: #a58fd6;
+        }
+
+        .task-item.done .task-checkbox::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            top: 2px;
+            left: 5px;
+            transform: rotate(45deg);
+        }
+
+        .task-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8c73c8;
+            line-height: 1.3;
+            transition: all 0.2s ease;
+        }
+
+        .task-item.done .task-text {
+            color: rgba(201, 184, 232, 0.6);
+            text-decoration: line-through;
+        }
+
+        .hint-text {
+            font-size: 0.65rem;
+            color: rgba(165, 143, 214, 0.6);
+            display: block;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        /* --- BOTÃO DE EXPORTAÇÃO --- */
+        .footer-section {
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            border-top: 1px dashed rgba(201, 184, 232, 0.3);
+            background-color: #fcfaff;
+        }
+
+        #btn-export {
+            background: transparent;
+            border: 1px solid #c9b8e8;
+            color: #8c73c8;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #btn-export:hover {
+            background: #e3d8f8;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            <div class="header">hidratação & rotina</div>
+            
+            <div class="water-section">
+                <div class="section-title">💧 água do dia (2 litros)</div>
+                <div class="drops-container">
+                    <div class="drop" data-water="1"></div>
+                    <div class="drop" data-water="2"></div>
+                    <div class="drop" data-water="3"></div>
+                    <div class="drop" data-water="4"></div>
+                    <div class="drop" data-water="5"></div>
+                    <div class="drop" data-water="6"></div>
+                    <div class="drop" data-water="7"></div>
+                    <div class="drop" data-water="8"></div>
+                </div>
+            </div>
+
+            <div class="meds-section">
+                <div class="section-title">💊 saúde e foco</div>
+
+                <div class="time-block">
+                    <div class="time-title">☀️ café da manhã</div>
+                    <div class="task-item" data-task="med-1">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">ritalina</div>
+                    </div>
+                    <div class="task-item" data-task="med-2">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">daforin</div>
+                    </div>
+                    <div class="task-item" data-task="med-3">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">venaflon</div>
+                    </div>
+                </div>
+
+                <div class="time-block">
+                    <div class="time-title">🕙 meio da manhã (aprox. 10h)</div>
+                    <div class="task-item" data-task="med-4">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">copo de líquido
+                            <span class="hint-text">+ colágeno verissol e creatina</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="time-block">
+                    <div class="time-title">🍽️ após o almoço (aprox. 14h)</div>
+                    <div class="task-item" data-task="med-5">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">ritalina</div>
+                    </div>
+                </div>
+
+                <div class="time-block">
+                    <div class="time-title">☕ café da tarde (aprox. 16h)</div>
+                    <div class="task-item" data-task="med-6">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">dose de whey + fibermais
+                            <span class="hint-text">no leite desnatado (com meu pai)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="time-block">
+                    <div class="time-title">🌙 saindo do escritório</div>
+                    <div class="task-item" data-task="med-7">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">venaflon</div>
+                    </div>
+                    <div class="task-item" data-task="med-8">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">simfort (1 comprimido)</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-section">
+                <button id="btn-export">📥 baixar histórico (.csv)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const todayKey = new Date().toISOString().split('T')[0];
+        
+        let savedData = JSON.parse(localStorage.getItem('healthTracker_' + todayKey)) || {
+            water: 0,
+            tasks: {}
+        };
+
+        function saveData() {
+            localStorage.setItem('healthTracker_' + todayKey, JSON.stringify(savedData));
+        }
+
+        // --- LÓGICA DA ÁGUA ---
+        const drops = document.querySelectorAll('.drop');
+
+        function renderWater() {
+            drops.forEach((drop, index) => {
+                if (index < savedData.water) {
+                    drop.classList.add('filled');
+                } else {
+                    drop.classList.remove('filled');
+                }
+            });
+        }
+
+        drops.forEach((drop, index) => {
+            drop.addEventListener('click', () => {
+                if (savedData.water === index + 1) {
+                    savedData.water = index; 
+                } else {
+                    savedData.water = index + 1; 
+                }
+                renderWater();
+                saveData();
+            });
+        });
+
+        // --- LÓGICA DAS TAREFAS ---
+        const tasks = document.querySelectorAll('.task-item');
+
+        function renderTasks() {
+            tasks.forEach(task => {
+                const taskId = task.getAttribute('data-task');
+                if (savedData.tasks[taskId]) {
+                    task.classList.add('done');
+                } else {
+                    task.classList.remove('done');
+                }
+            });
+        }
+
+        tasks.forEach(task => {
+            task.addEventListener('click', () => {
+                const taskId = task.getAttribute('data-task');
+                savedData.tasks[taskId] = !savedData.tasks[taskId];
+                renderTasks();
+                saveData();
+            });
+        });
+
+        // Inicializa a tela
+        renderWater();
+        renderTasks();
+
+        // ==========================================
+        // LÓGICA DE EXPORTAÇÃO DO HISTÓRICO
+        // ==========================================
+        document.getElementById('btn-export').addEventListener('click', () => {
+            // Cria o cabeçalho da tabela
+            let csvContent = "Data,Copos de Agua (de 8),Remedios Tomados (de 8),Pontuacao Final (%)\n";
+            
+            // Pega todas as chaves salvas que começam com "healthTracker_"
+            let historyKeys = Object.keys(localStorage)
+                .filter(key => key.startsWith('healthTracker_'))
+                .sort(); // Organiza por data mais antiga para mais nova
+
+            if (historyKeys.length === 0) {
+                alert("Você ainda não tem histórico salvo! Marque algumas coisas hoje e tente novamente.");
+                return;
+            }
+
+            // Lê cada dia e calcula a nota
+            historyKeys.forEach(key => {
+                let dateStr = key.replace('healthTracker_', ''); // Fica só "2023-10-25"
+                
+                // Formata a data para o padrão brasileiro (DD/MM/AAAA)
+                let dateObj = new Date(dateStr + 'T12:00:00'); // T12 para evitar fuso horário maluco
+                let dataFormatada = dateObj.toLocaleDateString('pt-BR');
+
+                let data = JSON.parse(localStorage.getItem(key));
+                
+                let waterCount = data.water || 0;
+                
+                // Conta quantas tarefas foram marcadas como 'true'
+                let tasksCount = 0;
+                if (data.tasks) {
+                    Object.values(data.tasks).forEach(isDone => {
+                        if (isDone) tasksCount++;
+                    });
+                }
+
+                // Calcula a porcentagem de sucesso do dia (8 águas + 8 remédios = 16 tarefas totais)
+                let totalScore = Math.round(((waterCount + tasksCount) / 16) * 100);
+
+                // Adiciona a linha na tabela
+                csvContent += `${dataFormatada},${waterCount},${tasksCount},${totalScore}%\n`;
+            });
+
+            // Cria o arquivo virtual e força o download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'meu_historico_saude.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+    </script>
+</body>
+</html>
