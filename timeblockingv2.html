@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocos Google Calendar - TDAH Friendly</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .centrador {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            width: 320px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        #status-icon {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        #event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #7850b4; 
+            margin-bottom: 2px;
+            text-transform: lowercase; 
+            max-width: 95%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #total-time-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(165, 143, 214, 0.8);
+            margin-bottom: 15px;
+            text-transform: lowercase;
+            min-height: 15px; 
+        }
+
+        #remaining-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: rgba(201, 184, 232, 0.9);
+            margin-bottom: -5px;
+            text-transform: lowercase;
+            letter-spacing: 0.05em;
+        }
+
+        #time-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #a58fd6;
+            margin-bottom: 20px;
+            font-variant-numeric: tabular-nums; 
+        }
+
+        /* --- OS BLOCOS FIXOS DE 30 MINUTOS --- */
+        #blocks-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite criar novas linhas se tiver muitas bolinhas */
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            max-width: 100%;
+        }
+
+        .time-block {
+            position: relative;
+            width: 44px; /* Bolinhas um pouquinho menores pra caberem mais */
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .block-label {
+            position: absolute;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(165, 143, 214, 0.8);
+            z-index: 5;
+        }
+
+        .block-ring {
+            position: absolute;
+            top: 0; left: 0;
+            transform: rotate(-90deg); 
+            transform-origin: center;
+        }
+        
+        .ring-bg {
+            stroke: rgba(201, 184, 232, 0.15); 
+            stroke-width: 5;
+            fill: transparent;
+        }
+        
+        .ring-progress {
+            stroke: #c9b8e8; 
+            stroke-width: 5;
+            fill: transparent;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear; 
+        }
+
+        #progress-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(165, 143, 214, 0.6);
+            margin-top: 15px;
+            text-transform: lowercase;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            <div id="status-icon">⏳</div>
+            <div id="event-title">sincronizando agenda...</div>
+            
+            <div id="total-time-text"></div>
+            <div id="remaining-text"></div>
+            
+            <div id="time-display">--:--:--</div>
+            
+            <div id="blocks-container"></div>
+
+            <div id="progress-text">conectando com o google...</div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================
+        const CALENDAR_ID = "dcd4ff3964bc839f2998d5a7dce76e5fd32cba646cb111fbeca0ab9382a575e6@group.calendar.google.com";
+        
+        // COLE SUA API KEY PROTEGIDA AQUI:
+        const API_KEY = "AIzaSyBKCYURk6-mPwgLR33nzMIgv2U_08Fc3TI"; 
+        // ========================================================
+
+        let todaysEvents = [];
+        let isApiConfigured = API_KEY !== "AIzaSyBKCYURk6-mPwgLR33nzMIgv2U_08Fc3TI" && API_KEY.length > 10;
+        let lastEventTitle = ""; // Para saber quando precisamos redesenhar as bolinhas
+
+        // Circunferência de um círculo com raio 18 (2 * pi * 18)
+        const BLOCK_CIRC = 113.09;
+
+        async function fetchGoogleEvents() {
+            if (!isApiConfigured) return loadFallbackEvents();
+
+            const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
+            const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${startOfDay}&timeMax=${endOfDay}&singleEvents=true&orderBy=startTime`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.items) {
+                    todaysEvents = data.items.map(item => ({
+                        title: item.summary || "ocupado",
+                        start: new Date(item.start.dateTime || item.start.date),
+                        end: new Date(item.end.dateTime || item.end.date)
+                    }));
+                }
+            } catch (e) {
+                console.error("Erro ao puxar a agenda:", e);
+                loadFallbackEvents();
+            }
+        }
+
+        function loadFallbackEvents() {
+            const now = new Date();
+            todaysEvents = [
+                {
+                    title: "bloco da manhã (sem api)",
+                    start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0),
+                    end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0)
+                },
+                {
+                    title: "bloco da tarde (sem api)",
+                    start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0),
+                    end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0)
+                }
+            ];
+        }
+
+        // Desenha as bolinhas de 30 minutos na tela
+        function renderTimeBlocks(totalMins) {
+            const container = document.getElementById('blocks-container');
+            const numBlocks = Math.ceil(totalMins / 30); // Calcula quantas bolinhas de 30m precisa
+            
+            let html = '';
+            for(let i = 0; i < numBlocks; i++) {
+                html += `
+                <div class="time-block">
+                    <span class="block-label">30m</span>
+                    <svg class="block-ring" width="44" height="44">
+                        <circle class="ring-bg" cx="22" cy="22" r="18" />
+                        <circle class="ring-progress" id="block-ring-${i}" cx="22" cy="22" r="18" />
+                    </svg>
+                </div>`;
+            }
+            container.innerHTML = html;
+
+            // Prepara as propriedades do SVG recém-criado
+            for(let i = 0; i < numBlocks; i++) {
+                const ring = document.getElementById(`block-ring-${i}`);
+                if (ring) {
+                    ring.style.strokeDasharray = `${BLOCK_CIRC} ${BLOCK_CIRC}`;
+                    ring.style.strokeDashoffset = BLOCK_CIRC; // Começa vazio
+                }
+            }
+        }
+
+        function updateTracker() {
+            const now = new Date();
+            let currentEvent = null;
+
+            for (let event of todaysEvents) {
+                if (now >= event.start && now < event.end) {
+                    currentEvent = event;
+                    break;
+                }
+            }
+
+            const totalTimeTextEl = document.getElementById('total-time-text');
+            const remainingTextEl = document.getElementById('remaining-text');
+            const container = document.getElementById('blocks-container');
+
+            if (currentEvent) {
+                document.getElementById('event-title').textContent = currentEvent.title;
+                document.getElementById('status-icon').textContent = "🎯";
+
+                const totalDurationSecs = Math.floor((currentEvent.end - currentEvent.start) / 1000);
+                const elapsedSecs = Math.floor((now - currentEvent.start) / 1000);
+                const remainingSecs = totalDurationSecs - elapsedSecs;
+
+                const totalMins = totalDurationSecs / 60;
+                const elapsedMins = elapsedSecs / 60;
+
+                // Desenha as bolinhas apenas se o evento mudou (pra não piscar a tela)
+                if (lastEventTitle !== currentEvent.title) {
+                    renderTimeBlocks(totalMins);
+                    lastEventTitle = currentEvent.title;
+                }
+
+                // --- TEXTO DO TEMPO TOTAL ---
+                let totalH = Math.floor(totalDurationSecs / 3600);
+                let totalMLeft = Math.floor((totalDurationSecs % 3600) / 60);
+                let totalStr = "tempo total: ";
+                if (totalH > 0) totalStr += totalH + "h ";
+                if (totalMLeft > 0) totalStr += totalMLeft + "m";
+                totalTimeTextEl.textContent = totalStr.trim();
+                
+                remainingTextEl.textContent = "resta:";
+
+                // --- CONTADOR ---
+                let h = Math.floor(remainingSecs / 3600);
+                let m = Math.floor((remainingSecs % 3600) / 60);
+                let s = remainingSecs % 60;
+                document.getElementById('time-display').textContent = 
+                    `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+                // --- ATUALIZA AS BOLINHAS DE 30 MINUTOS ---
+                const numBlocks = Math.ceil(totalMins / 30);
+                
+                for (let i = 0; i < numBlocks; i++) {
+                    let blockStartMin = i * 30; // ex: 0, 30, 60
+                    let blockEndMin = (i + 1) * 30; // ex: 30, 60, 90
+                    
+                    // Se o último bloco não for de 30 mins inteiros (ex: evento de 45 mins)
+                    let maxMinsInThisBlock = Math.min(30, totalMins - blockStartMin); 
+                    
+                    let ringEl = document.getElementById(`block-ring-${i}`);
+                    if (!ringEl) continue;
+
+                    let progress = 0; // 0 = vazio, 1 = cheio
+
+                    if (elapsedMins >= blockEndMin || elapsedMins >= totalMins) {
+                        progress = 0; // Já passou, vazio
+                    } else if (elapsedMins <= blockStartMin) {
+                        progress = maxMinsInThisBlock / 30; // Ainda não chegou, fica cheio (proporcional ao tamanho dele)
+                    } else {
+                        // O tempo está correndo exatamente dentro desta bolinha
+                        let minsRemainingInBlock = maxMinsInThisBlock - (elapsedMins - blockStartMin);
+                        progress = minsRemainingInBlock / 30;
+                    }
+
+                    ringEl.style.strokeDashoffset = BLOCK_CIRC * (1 - progress);
+                }
+
+                // Frase de incentivo baseada nas horas
+                if (h >= 2) document.getElementById('progress-text').textContent = "foco profundo rolando";
+                else if (h === 1) document.getElementById('progress-text').textContent = "metade do caminho, mantenha o ritmo";
+                else if (m > 15) document.getElementById('progress-text').textContent = "reta final deste bloco";
+                else document.getElementById('progress-text').textContent = "últimos minutos, você consegue!";
+
+            } else {
+                document.getElementById('event-title').textContent = "livre / sem blocos agora";
+                document.getElementById('status-icon').textContent = "☕";
+                document.getElementById('time-display').textContent = "--:--:--";
+                document.getElementById('progress-text').textContent = isApiConfigured ? "aproveite para beber uma água" : "coloque a api_key no código";
+                
+                totalTimeTextEl.textContent = "";
+                remainingTextEl.textContent = "";
+                container.innerHTML = ""; // Limpa as bolinhas
+                lastEventTitle = "";
+            }
+        }
+
+        fetchGoogleEvents().then(() => {
+            updateTracker();
+            setInterval(updateTracker, 1000);
+            setInterval(fetchGoogleEvents, 15 * 60 * 1000);
+        });
+    </script>
+</body>
+</html>
