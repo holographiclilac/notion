@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocos do Google Calendar</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .centrador {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            width: 320px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        #status-icon {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        #event-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: rgba(201, 184, 232, 0.9);
+            margin-bottom: 15px;
+            text-transform: lowercase; 
+            max-width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Coloca '...' se o título do evento for gigante */
+        }
+
+        /* --- CONTADOR NUMÉRICO --- */
+        #time-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #a58fd6;
+            margin-bottom: 25px;
+            font-variant-numeric: tabular-nums; 
+        }
+
+        /* --- OS QUATRO CÍRCULOS (AGORA SÃO FRAÇÕES DO EVENTO) --- */
+        .circles-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .circle-wrapper {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle-label {
+            position: absolute;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: rgba(165, 143, 214, 0.8);
+            z-index: 5;
+        }
+
+        .hour-ring {
+            position: absolute;
+            top: 0; left: 0;
+            transform: rotate(-90deg); 
+            transform-origin: center;
+        }
+        
+        .ring-bg {
+            stroke: rgba(201, 184, 232, 0.15); 
+            stroke-width: 6;
+            fill: transparent;
+        }
+        
+        .ring-progress {
+            stroke: #c9b8e8; 
+            stroke-width: 6;
+            fill: transparent;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear; 
+        }
+
+        #progress-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(165, 143, 214, 0.6);
+            margin-top: 15px;
+            text-transform: lowercase;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            <div id="status-icon">📅</div>
+            <div id="event-title">carregando agenda...</div>
+            
+            <div id="time-display">--:--:--</div>
+            
+            <div class="circles-container">
+                <div class="circle-wrapper">
+                    <span class="circle-label">1/4</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-1" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+                <div class="circle-wrapper">
+                    <span class="circle-label">2/4</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-2" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+                <div class="circle-wrapper">
+                    <span class="circle-label">3/4</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-3" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+                <div class="circle-wrapper">
+                    <span class="circle-label">4/4</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-4" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+            </div>
+
+            <div id="progress-text">sincronizando...</div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================
+        // 1. CONFIGURAÇÕES DO GOOGLE CALENDAR
+        // ========================================================
+        const CALENDAR_ID = "dcd4ff3964bc839f2998d5a7dce76e5fd32cba646cb111fbeca0ab9382a575e6@group.calendar.google.com";
+        
+        // PASSO A PASSO PARA CONSEGUIR A CHAVE:
+        // 1. Acesse: console.cloud.google.com
+        // 2. Crie um projeto novo
+        // 3. Vá em "APIs e Serviços" > "Biblioteca" e ative a "Google Calendar API"
+        // 4. Vá em "Credenciais" > "Criar Credenciais" > "Chave de API"
+        // 5. Cole ela aqui embaixo entre as aspas:
+        const API_KEY = "AIzaSyBKCYURk6-mPwgLR33nzMIgv2U_08Fc3TI"; 
+        // ========================================================
+
+        let todaysEvents = [];
+        let isApiConfigured = API_KEY !== "COLE_SUA_API_KEY_AQUI" && API_KEY.length > 10;
+
+        const CIRCUMFERENCE = 125.66;
+        const rings = [
+            document.getElementById('ring-1'),
+            document.getElementById('ring-2'),
+            document.getElementById('ring-3'),
+            document.getElementById('ring-4')
+        ];
+
+        rings.forEach(ring => {
+            ring.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
+            ring.style.strokeDashoffset = 0; 
+        });
+
+        function setRingProgress(ringIndex, percentRemaining) {
+            if (percentRemaining < 0) percentRemaining = 0;
+            if (percentRemaining > 1) percentRemaining = 1;
+            const offset = CIRCUMFERENCE * (1 - percentRemaining);
+            rings[ringIndex].style.strokeDashoffset = offset;
+        }
+
+        // Busca os eventos do dia no Google
+        async function fetchGoogleEvents() {
+            if (!isApiConfigured) return loadFallbackEvents();
+
+            const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
+            const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${startOfDay}&timeMax=${endOfDay}&singleEvents=true&orderBy=startTime`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.items) {
+                    todaysEvents = data.items.map(item => ({
+                        title: item.summary || "ocupado",
+                        start: new Date(item.start.dateTime || item.start.date),
+                        end: new Date(item.end.dateTime || item.end.date)
+                    }));
+                }
+            } catch (e) {
+                console.error("Erro ao puxar a agenda:", e);
+                loadFallbackEvents();
+            }
+        }
+
+        // Plano B: Horários fixos se a API Key não estiver configurada
+        function loadFallbackEvents() {
+            const now = new Date();
+            todaysEvents = [
+                {
+                    title: "turno da manhã (sem api)",
+                    start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0),
+                    end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0)
+                },
+                {
+                    title: "turno da tarde (sem api)",
+                    start: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0),
+                    end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0)
+                }
+            ];
+        }
+
+        function updateTracker() {
+            const now = new Date();
+            let currentEvent = null;
+
+            // Procura se tem algum evento rolando agora
+            for (let event of todaysEvents) {
+                if (now >= event.start && now < event.end) {
+                    currentEvent = event;
+                    break;
+                }
+            }
+
+            if (currentEvent) {
+                document.getElementById('event-title').textContent = currentEvent.title;
+                document.getElementById('status-icon').textContent = "⏳";
+
+                // Cálculos do tempo
+                const totalDurationSecs = Math.floor((currentEvent.end - currentEvent.start) / 1000);
+                const elapsedSecs = Math.floor((now - currentEvent.start) / 1000);
+                const remainingSecs = totalDurationSecs - elapsedSecs;
+
+                // Mostra o número decrescente
+                let h = Math.floor(remainingSecs / 3600);
+                let m = Math.floor((remainingSecs % 3600) / 60);
+                let s = remainingSecs % 60;
+                document.getElementById('time-display').textContent = 
+                    `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+                // --- Lógica Dinâmica das 4 Bolinhas ---
+                // O evento é dividido em 4 partes (25% cada)
+                const percentElapsed = elapsedSecs / totalDurationSecs;
+
+                for (let i = 0; i < 4; i++) {
+                    let ringStartPercent = i * 0.25;
+                    let ringEndPercent = (i + 1) * 0.25;
+
+                    if (percentElapsed >= ringEndPercent) {
+                        setRingProgress(i, 0); // Já passou dessa parte (vazio)
+                    } else if (percentElapsed <= ringStartPercent) {
+                        setRingProgress(i, 1); // Ainda não chegou (cheio)
+                    } else {
+                        // Está exatamente dentro dessa bolinha, esvaziando...
+                        let fractionInThisRing = (percentElapsed - ringStartPercent) / 0.25;
+                        let percentRemainingInRing = 1 - fractionInThisRing;
+                        setRingProgress(i, percentRemainingInRing);
+                    }
+                }
+
+                // Frases motivacionais baseadas na porcentagem do evento
+                if (percentElapsed < 0.25) document.getElementById('progress-text').textContent = "foco total, estamos só começando";
+                else if (percentElapsed < 0.50) document.getElementById('progress-text').textContent = "no ritmo perfeito";
+                else if (percentElapsed < 0.75) document.getElementById('progress-text').textContent = "já passamos da metade do bloco";
+                else document.getElementById('progress-text').textContent = "reta final, você consegue!";
+
+            } else {
+                // Fora de qualquer evento da agenda
+                document.getElementById('event-title').textContent = "livre / sem eventos agora";
+                document.getElementById('status-icon').textContent = "☕";
+                document.getElementById('time-display').textContent = "--:--:--";
+                document.getElementById('progress-text').textContent = isApiConfigured ? "esperando o próximo bloco" : "coloque a api_key no código";
+                
+                for (let i = 0; i < 4; i++) setRingProgress(i, 0); // Anéis vazios
+            }
+        }
+
+        // Fluxo de início
+        fetchGoogleEvents().then(() => {
+            updateTracker();
+            setInterval(updateTracker, 1000);
+            // Atualiza a agenda do Google a cada 15 minutos para pegar novos eventos
+            setInterval(fetchGoogleEvents, 15 * 60 * 1000);
+        });
+    </script>
+</body>
+</html>
