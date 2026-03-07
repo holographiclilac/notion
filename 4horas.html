@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocos de Trabalho Regressivo</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .centrador {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 16px; 
+            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
+            width: 320px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        #status-icon {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        #status-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: rgba(201, 184, 232, 0.9);
+            margin-bottom: 15px;
+            text-transform: lowercase; /* Tudo minúsculo */
+        }
+
+        /* --- CONTADOR NUMÉRICO --- */
+        #time-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #a58fd6;
+            margin-bottom: 25px;
+            font-variant-numeric: tabular-nums; 
+        }
+
+        /* --- OS QUATRO CÍRCULOS (INDICADOR VISUAL) --- */
+        .circles-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .circle-wrapper {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* O texto dentro de cada bolinha (1ª, 2ª...) */
+        .circle-label {
+            position: absolute;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: rgba(165, 143, 214, 0.8);
+            z-index: 5;
+        }
+
+        .hour-ring {
+            position: absolute;
+            top: 0; left: 0;
+            transform: rotate(-90deg); /* Faz o esvaziamento começar do topo (12h) */
+            transform-origin: center;
+        }
+        
+        .ring-bg {
+            stroke: rgba(201, 184, 232, 0.15); /* Fundo da trilha */
+            stroke-width: 6;
+            fill: transparent;
+        }
+        
+        .ring-progress {
+            stroke: #c9b8e8; /* Cor do tempo cheio */
+            stroke-width: 6;
+            fill: transparent;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear; /* Animação suave */
+        }
+
+        #progress-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(165, 143, 214, 0.6);
+            margin-top: 15px;
+            text-transform: lowercase;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            <div id="status-icon">☀️</div>
+            <div id="status-text">turno da manhã</div>
+            
+            <div id="time-display">04:00:00</div>
+            
+            <div class="circles-container">
+                <div class="circle-wrapper">
+                    <span class="circle-label">1ª</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-1" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+                <div class="circle-wrapper">
+                    <span class="circle-label">2ª</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-2" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+                <div class="circle-wrapper">
+                    <span class="circle-label">3ª</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-3" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+                <div class="circle-wrapper">
+                    <span class="circle-label">4ª</span>
+                    <svg class="hour-ring" width="50" height="50">
+                        <circle class="ring-bg" cx="25" cy="25" r="20" />
+                        <circle class="ring-progress" id="ring-4" cx="25" cy="25" r="20" />
+                    </svg>
+                </div>
+            </div>
+
+            <div id="progress-text">iniciando bloco...</div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração dos anéis (Circunferência = 2 * PI * Raio)
+        // Raio = 20, logo 2 * 3.1415 * 20 ≈ 125.6
+        const CIRCUMFERENCE = 125.66;
+        const rings = [
+            document.getElementById('ring-1'),
+            document.getElementById('ring-2'),
+            document.getElementById('ring-3'),
+            document.getElementById('ring-4')
+        ];
+
+        // Aplica a circunferência inicial em todos os anéis
+        rings.forEach(ring => {
+            ring.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
+            ring.style.strokeDashoffset = 0; // 0 = 100% cheio
+        });
+
+        function setRingProgress(ringIndex, percentRemaining) {
+            // percentRemaining: 1 = cheio, 0 = vazio
+            const offset = CIRCUMFERENCE * (1 - percentRemaining);
+            rings[ringIndex].style.strokeDashoffset = offset;
+        }
+
+        function updateTracker() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            let status = "";
+            let icon = "";
+            let isWorking = false;
+            let blockStartHour = 0;
+            let endBlockTime = null;
+
+            // Verifica o bloco
+            if (hours >= 8 && hours < 12) {
+                status = "turno da manhã";
+                icon = "☀️";
+                isWorking = true;
+                blockStartHour = 8;
+                endBlockTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0);
+            } 
+            else if (hours >= 12 && hours < 14) {
+                status = "horário de almoço";
+                icon = "🍽️";
+            } 
+            else if (hours >= 14 && hours < 18) {
+                status = "turno da tarde";
+                icon = "☕";
+                isWorking = true;
+                blockStartHour = 14;
+                endBlockTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0);
+            } 
+            else {
+                status = "fora do expediente";
+                icon = "🌙";
+            }
+
+            document.getElementById('status-text').textContent = status;
+            document.getElementById('status-icon').textContent = icon;
+
+            if (isWorking) {
+                // --- 1. CONTADOR REGRESSIVO NUMÉRICO ---
+                const remainingSecondsTotal = Math.floor((endBlockTime - now) / 1000);
+                
+                let h = Math.floor(remainingSecondsTotal / 3600);
+                let m = Math.floor((remainingSecondsTotal % 3600) / 60);
+                let s = remainingSecondsTotal % 60;
+                
+                document.getElementById('time-display').textContent = 
+                    `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+                // --- 2. LÓGICA DAS 4 BOLINHAS ---
+                for (let i = 0; i < 4; i++) {
+                    let ringHour = blockStartHour + i; // ex: 8, 9, 10, 11
+                    
+                    if (hours > ringHour) {
+                        // Se a hora atual já passou dessa bolinha, ela está VAZIA (0% restante)
+                        setRingProgress(i, 0);
+                    } 
+                    else if (hours < ringHour) {
+                        // Se a hora dessa bolinha ainda não chegou, ela está CHEIA (100% restante)
+                        setRingProgress(i, 1);
+                    } 
+                    else if (hours === ringHour) {
+                        // Se for EXATAMENTE a hora atual, calcula o esvaziamento baseado nos minutos/segundos
+                        let secondsPassedInThisHour = (minutes * 60) + seconds;
+                        let percentRemaining = 1 - (secondsPassedInThisHour / 3600);
+                        setRingProgress(i, percentRemaining);
+                    }
+                }
+
+                // Texto fofo de acompanhamento
+                if (h === 3) document.getElementById('progress-text').textContent = "foco total, estamos só começando";
+                else if (h === 2) document.getElementById('progress-text').textContent = "no ritmo perfeito";
+                else if (h === 1) document.getElementById('progress-text').textContent = "já passamos da metade do bloco";
+                else document.getElementById('progress-text').textContent = "última horinha, você consegue!";
+
+            } else {
+                // Se estiver fora do horário, trava o relógio e enche as bolinhas de volta (ou esvazia, como preferir)
+                document.getElementById('time-display').textContent = "--:--:--";
+                document.getElementById('progress-text').textContent = "hora de descansar a mente";
+                
+                // Fora do expediente, deixa os 4 anéis vazios apagadinhos
+                for (let i = 0; i < 4; i++) {
+                    setRingProgress(i, 0);
+                }
+            }
+        }
+
+        // Roda a função imediatamente e atualiza a cada segundo
+        updateTracker();
+        setInterval(updateTracker, 1000);
+    </script>
+</body>
+</html>
