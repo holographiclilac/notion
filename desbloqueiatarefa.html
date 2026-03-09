@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Desbloqueador de Tarefas</title>
+    <title>Desbloqueador de Paralisia - Cérebro TDAH</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
 
     <style>
         html, body {
@@ -31,11 +31,13 @@
 
         .widget-box {
             background-color: #ffffff;
-            border-radius: 16px; 
-            box-shadow: 0px 4px 20px rgba(120, 80, 180, 0.08); 
-            width: 320px;
-            min-height: 250px;
-            padding: 25px 20px;
+            border-radius: 24px; 
+            box-shadow: 0px 8px 30px rgba(120, 80, 180, 0.05); 
+            width: 340px;
+            max-height: 95vh;
+            overflow-y: auto;
+            scrollbar-width: none; 
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,10 +46,33 @@
             transition: all 0.3s ease;
         }
 
+        /* --- LOGO E BRANDING --- */
+        .app-logo {
+            width: 140px; /* Tamanho da sua logo */
+            height: auto;
+            margin-bottom: 5px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .brand-handle {
+            font-family: 'Caveat', cursive; /* Fonte manuscrita */
+            font-size: 1.4rem;
+            color: #c9b8e8;
+            margin-top: 15px;
+            opacity: 0.9;
+            letter-spacing: 0.05em;
+        }
+
         /* Títulos e Textos */
         .emoji-header {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2.8rem;
+            margin-bottom: 12px;
             animation: bounce 2s infinite ease-in-out;
         }
 
@@ -57,75 +82,74 @@
         }
 
         .main-title {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            color: #7850b4;
-            margin-bottom: 8px;
+            color: #7850b4; 
+            margin-bottom: 10px;
             text-transform: lowercase;
         }
 
         .subtitle {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: rgba(165, 143, 214, 0.8);
-            margin-bottom: 20px;
-            line-height: 1.4;
+            color: #a58fd6; 
+            margin-bottom: 25px;
+            line-height: 1.5;
             text-transform: lowercase;
+            padding: 0 10px;
         }
 
         .section-label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #a58fd6;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             text-transform: lowercase;
             width: 100%;
-            text-align: left;
-            padding-left: 5%;
+            text-align: center;
         }
 
-        /* Inputs e Botões */
+        /* Inputs */
         input[type="text"] {
             width: 90%;
-            padding: 10px 15px;
-            border: 2px solid rgba(201, 184, 232, 0.4);
-            border-radius: 12px;
+            padding: 12px 15px;
+            border: 2px solid #e3d8f8;
+            border-radius: 16px;
             font-family: 'Quicksand', sans-serif;
             font-size: 0.85rem;
             font-weight: 600;
             color: #7850b4;
             outline: none;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             transition: all 0.2s ease;
         }
 
         input[type="text"]:focus {
             border-color: #a58fd6;
-            box-shadow: 0 0 8px rgba(165, 143, 214, 0.2);
+            box-shadow: 0 0 10px rgba(165, 143, 214, 0.15);
         }
 
         input::placeholder {
-            color: rgba(201, 184, 232, 0.6);
+            color: #c9b8e8;
             font-weight: 500;
         }
 
+        /* Botões */
         .btn-primary {
-            background-color: #c9b8e8;
+            background-color: #c9b8e8; 
             color: #ffffff;
             border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
+            padding: 12px 20px;
+            border-radius: 16px;
             font-family: 'Quicksand', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(201, 184, 232, 0.3);
             text-transform: lowercase;
             width: 90%;
             margin-bottom: 10px;
-            margin-top: 10px;
         }
 
         .btn-primary:hover {
@@ -136,9 +160,8 @@
         .btn-secondary {
             background-color: transparent;
             color: #a58fd6;
-            border: 2px solid #e3d8f8;
+            border: none;
             padding: 8px 20px;
-            border-radius: 12px;
             font-family: 'Quicksand', sans-serif;
             font-size: 0.8rem;
             font-weight: 700;
@@ -149,8 +172,8 @@
         }
 
         .btn-secondary:hover {
-            background-color: #fcfaff;
-            border-color: #c9b8e8;
+            color: #7850b4;
+            text-decoration: underline;
         }
 
         /* Telas (Passos) */
@@ -171,26 +194,34 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Pílulas de Seleção (Dopamina/Motivos) */
+        /* Pílulas de Seleção */
         .options-container {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 15px;
-            width: 95%;
+            margin-bottom: 20px;
+            width: 100%;
         }
 
         .option-pill {
-            background-color: #fcfaff;
-            border: 1px solid #e3d8f8;
-            color: #8c73c8;
-            padding: 6px 12px;
+            background-color: #ffffff;
+            border: 1px solid #e3d8f8; 
+            color: #7850b4;
+            padding: 8px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .option-pill:hover {
+            background-color: #fcfaff;
+            border-color: #c9b8e8;
         }
 
         .option-pill.selected {
@@ -202,12 +233,11 @@
 
         /* Temporizador */
         .timer-display {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             font-weight: 700;
             color: #7850b4;
             font-variant-numeric: tabular-nums;
-            margin: 15px 0;
-            text-shadow: 2px 2px 0px rgba(201, 184, 232, 0.2);
+            margin: 20px 0;
         }
 
     </style>
@@ -218,7 +248,8 @@
         <div class="widget-box">
             
             <div id="step-1" class="step active">
-                <div class="emoji-header">🫠</div>
+                <img src="NOVA LOGO (2000 x 2000 px).png.png" alt="Cérebro TDAH Logo" class="app-logo">
+                
                 <div class="main-title">tá com paralisia?</div>
                 <div class="subtitle">sei que é importante, mas o cérebro não colabora. o que você precisa fazer?</div>
                 <input type="text" id="task-input" placeholder="ex: responder aquele e-mail chato" autocomplete="off">
@@ -234,18 +265,24 @@
                 <div class="options-container">
                     <div class="option-pill" onclick="toggleOption(this)">riscar da lista 📝</div>
                     <div class="option-pill" onclick="toggleOption(this)">alívio da culpa 😮‍💨</div>
-                    <div class="option-pill" onclick="toggleOption(this)">ficar livre pra deitar 🛌</div>
                     <div class="option-pill" onclick="toggleOption(this)">paz mental 🧠</div>
+                    <div class="option-pill" onclick="toggleOption(this)">livre pra deitar 🛌</div>
+                    <div class="option-pill" onclick="toggleOption(this)">silêncio na cabeça 🤫</div>
+                    <div class="option-pill" onclick="toggleOption(this)">parar de pensar nisso 🛑</div>
+                    <div class="option-pill" onclick="toggleOption(this)">ver série sem culpa 📺</div>
                 </div>
 
                 <div class="section-label">construção (longo prazo):</div>
                 <div class="options-container">
-                    <div class="option-pill" onclick="toggleOption(this)">um passo pro meu objetivo 🚀</div>
+                    <div class="option-pill" onclick="toggleOption(this)">um passo pro objetivo 🚀</div>
                     <div class="option-pill" onclick="toggleOption(this)">menos caos na semana 🧘‍♀️</div>
                     <div class="option-pill" onclick="toggleOption(this)">orgulho de mim mesma ✨</div>
+                    <div class="option-pill" onclick="toggleOption(this)">evitar problema futuro 🛡️</div>
+                    <div class="option-pill" onclick="toggleOption(this)">construir minha rotina 🧱</div>
                 </div>
 
                 <button class="btn-primary" onclick="nextStep(3)">mentalizei. e agora?</button>
+                <div class="brand-handle">@cerebrotdah</div>
             </div>
 
             <div id="step-3" class="step">
@@ -255,6 +292,7 @@
                 <input type="text" id="micro-task-input" placeholder="ex: só abrir o notebook" autocomplete="off">
                 <button class="btn-primary" onclick="nextStep(4)">consigo fazer esse passo</button>
                 <button class="btn-secondary" onclick="nextStep(2)">voltar</button>
+                <div class="brand-handle">@cerebrotdah</div>
             </div>
 
             <div id="step-4" class="step">
@@ -265,11 +303,18 @@
                 <div class="options-container">
                     <div class="option-pill" onclick="toggleOption(this)">música animada 🎧</div>
                     <div class="option-pill" onclick="toggleOption(this)">café / cházinho ☕</div>
+                    <div class="option-pill" onclick="toggleOption(this)">lofi / ruído branco 🌧️</div>
+                    <div class="option-pill" onclick="toggleOption(this)">bebida geladinha 🥤</div>
                     <div class="option-pill" onclick="toggleOption(this)">acender uma vela 🕯️</div>
                     <div class="option-pill" onclick="toggleOption(this)">roupa confortável 🧸</div>
+                    <div class="option-pill" onclick="toggleOption(this)">bala de menta 🍬</div>
+                    <div class="option-pill" onclick="toggleOption(this)">promessa de um doce 🍫</div>
+                    <div class="option-pill" onclick="toggleOption(this)">luz natural/janela ☀️</div>
                 </div>
 
                 <button class="btn-primary" onclick="startTimer()">tô pronta. bora.</button>
+                <button class="btn-secondary" onclick="nextStep(3)">voltar</button>
+                <div class="brand-handle">@cerebrotdah</div>
             </div>
 
             <div id="step-5" class="step">
@@ -281,6 +326,7 @@
                 
                 <button class="btn-primary" id="btn-done" onclick="finishTask()">já acabei!</button>
                 <button class="btn-secondary" onclick="resetApp()">desistir por agora</button>
+                <div class="brand-handle">@cerebrotdah</div>
             </div>
 
             <div id="step-6" class="step">
@@ -288,6 +334,7 @@
                 <div class="main-title">você conseguiu!</div>
                 <div class="subtitle">quebrou a barreira da paralisia. orgulho gigante de você!</div>
                 <button class="btn-primary" onclick="resetApp()">desbloquear outra tarefa</button>
+                <div class="brand-handle">@cerebrotdah</div>
             </div>
 
         </div>
@@ -295,14 +342,13 @@
 
     <script>
         let timerInterval;
-        let timeLeft = 300; // 5 minutos
+        let timeLeft = 300; 
 
         function nextStep(stepNumber) {
             document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
             document.getElementById('step-' + stepNumber).classList.add('active');
         }
 
-        // Função genérica para selecionar/deselecionar as pílulas
         function toggleOption(element) {
             element.classList.toggle('selected');
         }
@@ -311,7 +357,7 @@
             const microTask = document.getElementById('micro-task-input').value || "apenas começar";
             document.getElementById('active-task-display').textContent = microTask;
             
-            nextStep(5); // Vai pro cronômetro
+            nextStep(5); 
             timeLeft = 300;
             updateTimerDisplay();
             
