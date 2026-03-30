@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desbloqueador de Paralisia - Cérebro TDAH</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .centrador {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .widget-box {
+            background-color: #ffffff;
+            border-radius: 24px; 
+            box-shadow: 0px 8px 30px rgba(120, 80, 180, 0.05); 
+            width: 340px;
+            max-height: 95vh;
+            overflow-y: auto;
+            scrollbar-width: none; 
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* --- LOGO E BRANDING --- */
+        .app-logo {
+            width: 140px; /* Tamanho da sua logo */
+            height: auto;
+            margin-bottom: 5px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .brand-handle {
+            font-family: 'Caveat', cursive; /* Fonte manuscrita */
+            font-size: 1.4rem;
+            color: #c9b8e8;
+            margin-top: 15px;
+            opacity: 0.9;
+            letter-spacing: 0.05em;
+        }
+
+        /* Títulos e Textos */
+        .emoji-header {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .main-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #7850b4; 
+            margin-bottom: 10px;
+            text-transform: lowercase;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #a58fd6; 
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-transform: lowercase;
+            padding: 0 10px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #a58fd6;
+            margin-bottom: 10px;
+            text-transform: lowercase;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Inputs */
+        input[type="text"] {
+            width: 90%;
+            padding: 12px 15px;
+            border: 2px solid #e3d8f8;
+            border-radius: 16px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #7850b4;
+            outline: none;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #a58fd6;
+            box-shadow: 0 0 10px rgba(165, 143, 214, 0.15);
+        }
+
+        input::placeholder {
+            color: #c9b8e8;
+            font-weight: 500;
+        }
+
+        /* Botões */
+        .btn-primary {
+            background-color: #c9b8e8; 
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: lowercase;
+            width: 90%;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #a58fd6;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #a58fd6;
+            border: none;
+            padding: 8px 20px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: lowercase;
+            width: 90%;
+        }
+
+        .btn-secondary:hover {
+            color: #7850b4;
+            text-decoration: underline;
+        }
+
+        /* Telas (Passos) */
+        .step {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .step.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pílulas de Seleção */
+        .options-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .option-pill {
+            background-color: #ffffff;
+            border: 1px solid #e3d8f8; 
+            color: #7850b4;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .option-pill:hover {
+            background-color: #fcfaff;
+            border-color: #c9b8e8;
+        }
+
+        .option-pill.selected {
+            background-color: #c9b8e8;
+            color: #ffffff;
+            border-color: #c9b8e8;
+            transform: scale(1.05);
+        }
+
+        /* Temporizador */
+        .timer-display {
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: #7850b4;
+            font-variant-numeric: tabular-nums;
+            margin: 20px 0;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="centrador">
+        <div class="widget-box">
+            
+            <div id="step-1" class="step active">
+                <img src="NOVA LOGO (2000 x 2000 px).png.png" alt="Cérebro TDAH Logo" class="app-logo">
+                
+                <div class="main-title">tá com paralisia?</div>
+                <div class="subtitle">sei que é importante, mas o cérebro não colabora. o que você precisa fazer?</div>
+                <input type="text" id="task-input" placeholder="ex: responder aquele e-mail chato" autocomplete="off">
+                <button class="btn-primary" onclick="nextStep(2)">não tenho energia pra isso</button>
+            </div>
+
+            <div id="step-2" class="step">
+                <div class="emoji-header">🎯</div>
+                <div class="main-title">por que isso importa?</div>
+                <div class="subtitle">lembre o seu cérebro do que você ganha se terminar isso hoje.</div>
+                
+                <div class="section-label">alívio imediato (curto prazo):</div>
+                <div class="options-container">
+                    <div class="option-pill" onclick="toggleOption(this)">riscar da lista 📝</div>
+                    <div class="option-pill" onclick="toggleOption(this)">alívio da culpa 😮‍💨</div>
+                    <div class="option-pill" onclick="toggleOption(this)">paz mental 🧠</div>
+                    <div class="option-pill" onclick="toggleOption(this)">livre pra deitar 🛌</div>
+                    <div class="option-pill" onclick="toggleOption(this)">silêncio na cabeça 🤫</div>
+                    <div class="option-pill" onclick="toggleOption(this)">parar de pensar nisso 🛑</div>
+                    <div class="option-pill" onclick="toggleOption(this)">ver série sem culpa 📺</div>
+                </div>
+
+                <div class="section-label">construção (longo prazo):</div>
+                <div class="options-container">
+                    <div class="option-pill" onclick="toggleOption(this)">um passo pro objetivo 🚀</div>
+                    <div class="option-pill" onclick="toggleOption(this)">menos caos na semana 🧘‍♀️</div>
+                    <div class="option-pill" onclick="toggleOption(this)">orgulho de mim mesma ✨</div>
+                    <div class="option-pill" onclick="toggleOption(this)">evitar problema futuro 🛡️</div>
+                    <div class="option-pill" onclick="toggleOption(this)">construir minha rotina 🧱</div>
+                </div>
+
+                <button class="btn-primary" onclick="nextStep(3)">mentalizei. e agora?</button>
+                <div class="brand-handle">@cerebrotdah</div>
+            </div>
+
+            <div id="step-3" class="step">
+                <div class="emoji-header">🤏</div>
+                <div class="main-title">vamos enganar o cérebro</div>
+                <div class="subtitle">qual é o primeiro passo <b>ridiculamente pequeno</b> só pra começar?</div>
+                <input type="text" id="micro-task-input" placeholder="ex: só abrir o notebook" autocomplete="off">
+                <button class="btn-primary" onclick="nextStep(4)">consigo fazer esse passo</button>
+                <button class="btn-secondary" onclick="nextStep(2)">voltar</button>
+                <div class="brand-handle">@cerebrotdah</div>
+            </div>
+
+            <div id="step-4" class="step">
+                <div class="emoji-header">✨</div>
+                <div class="main-title">escolha seu combustível</div>
+                <div class="subtitle">associe algo gostoso para dar um pico de dopamina sensorial agora.</div>
+                
+                <div class="options-container">
+                    <div class="option-pill" onclick="toggleOption(this)">música animada 🎧</div>
+                    <div class="option-pill" onclick="toggleOption(this)">café / cházinho ☕</div>
+                    <div class="option-pill" onclick="toggleOption(this)">lofi / ruído branco 🌧️</div>
+                    <div class="option-pill" onclick="toggleOption(this)">bebida geladinha 🥤</div>
+                    <div class="option-pill" onclick="toggleOption(this)">acender uma vela 🕯️</div>
+                    <div class="option-pill" onclick="toggleOption(this)">roupa confortável 🧸</div>
+                    <div class="option-pill" onclick="toggleOption(this)">bala de menta 🍬</div>
+                    <div class="option-pill" onclick="toggleOption(this)">promessa de um doce 🍫</div>
+                    <div class="option-pill" onclick="toggleOption(this)">luz natural/janela ☀️</div>
+                </div>
+
+                <button class="btn-primary" onclick="startTimer()">tô pronta. bora.</button>
+                <button class="btn-secondary" onclick="nextStep(3)">voltar</button>
+                <div class="brand-handle">@cerebrotdah</div>
+            </div>
+
+            <div id="step-5" class="step">
+                <div class="emoji-header">⏳</div>
+                <div class="main-title" id="active-task-display">fazendo o passo pequeno...</div>
+                <div class="subtitle">acordo: você só faz por 5 minutos. se quiser parar depois, tá livre!</div>
+                
+                <div class="timer-display" id="timer">05:00</div>
+                
+                <button class="btn-primary" id="btn-done" onclick="finishTask()">já acabei!</button>
+                <button class="btn-secondary" onclick="resetApp()">desistir por agora</button>
+                <div class="brand-handle">@cerebrotdah</div>
+            </div>
+
+            <div id="step-6" class="step">
+                <div class="emoji-header">🎉</div>
+                <div class="main-title">você conseguiu!</div>
+                <div class="subtitle">quebrou a barreira da paralisia. orgulho gigante de você! 🎉</div>
+                <button class="btn-primary" onclick="resetApp()">desbloquear outra tarefa</button>
+                <div class="brand-handle">@cerebrotdah</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let timeLeft = 300; 
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + stepNumber).classList.add('active');
+        }
+
+        function toggleOption(element) {
+            element.classList.toggle('selected');
+        }
+
+        function startTimer() {
+            const microTask = document.getElementById('micro-task-input').value || "apenas começar";
+            document.getElementById('active-task-display').textContent = microTask;
+            
+            nextStep(5); 
+            timeLeft = 300;
+            updateTimerDisplay();
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').textContent = "00:00";
+                    document.getElementById('active-task-display').textContent = "5 minutos passaram!";
+                    document.querySelector('#step-5 .subtitle').textContent = "você tá livre pra parar. mas se quiser continuar, aproveita o embalo!";
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function finishTask() {
+            clearInterval(timerInterval);
+            nextStep(6);
+        }
+
+        function resetApp() {
+            clearInterval(timerInterval);
+            document.getElementById('task-input').value = "";
+            document.getElementById('micro-task-input').value = "";
+            document.querySelectorAll('.option-pill').forEach(el => el.classList.remove('selected'));
+            document.querySelector('#step-5 .subtitle').textContent = "acordo: você só faz por 5 minutos. se quiser parar depois, tá livre!";
+            nextStep(1);
+        }
+    </script>
+</body>
+</html>
