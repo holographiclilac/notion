@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semana de Produção</title>
+    <title>Semana de Produção Holográfica</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
 
@@ -33,7 +33,7 @@
             background-color: #ffffff;
             border-radius: 24px; 
             box-shadow: 0px 8px 30px rgba(120, 80, 180, 0.05); 
-            width: 260px;
+            width: 280px; /* Um pouquinho mais largo pro texto caber melhor */
             padding: 25px 20px;
             display: flex;
             flex-direction: column;
@@ -46,26 +46,45 @@
             margin-bottom: 8px;
         }
 
+        /* --- TÉCNICA DE GRADIENTE NO TEXTO (HOLOGRÁFICO) --- */
+        .holo-text {
+            /* Definindo o Gradiente: Ciano Pastel -> Rosa Pastel -> Lilás Pastel */
+            background-image: linear-gradient(to right, #99FFFF 0%, #FF99CC 50%, #CC99FF 100%);
+            
+            /* Recorta o fundo para ficar apenas dentro das letras */
+            -webkit-background-clip: text;
+            background-clip: text;
+            
+            /* Torna a cor original do texto transparente para mostrar o fundo */
+            -webkit-text-fill-color: transparent;
+            text-fill-color: transparent;
+            
+            /* Garante compatibilidade */
+            display: inline-block;
+        }
+
         .subtitle {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #a58fd6;
             text-transform: lowercase;
             margin-bottom: 5px;
+            /* Aplicando o gradiente mais suave */
+            opacity: 0.9;
         }
 
         .week-number {
             font-size: 3.5rem;
             font-weight: 700;
-            color: #7850b4;
             line-height: 1;
             margin-bottom: 12px;
             font-variant-numeric: tabular-nums;
+            /* Aplicando o gradiente forte no número */
         }
 
         .status-pill {
             background-color: #fcfaff;
             border: 1px solid #e3d8f8;
+            /* Mantendo a cor sólida no texto da pílula para legibilidade */
             color: #8c73c8;
             padding: 6px 14px;
             border-radius: 16px;
@@ -80,8 +99,8 @@
     <div class="centrador">
         <div class="widget-box">
             <div class="icon">📝</div>
-            <div class="subtitle">produzindo conteúdo para a</div>
-            <div class="week-number" id="week-display">--</div>
+            <div class="subtitle holo-text">produzindo conteúdo para a</div>
+            <div class="week-number holo-text" id="week-display">--</div>
             <div class="status-pill">foco no futuro</div>
         </div>
     </div>
@@ -90,10 +109,10 @@
         function getNextWeekNumber() {
             const today = new Date();
             
-            // Adiciona exatos 7 dias à data de hoje para "pular" para a semana que vem
+            // Adiciona exatos 7 dias à data de hoje
             const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
             
-            // Lógica oficial para descobrir o número da semana (Padrão ISO 8601)
+            // Lógica oficial para descobrir o número da semana (ISO 8601)
             const target = new Date(nextWeek.valueOf());
             const dayNr = (nextWeek.getDay() + 6) % 7;
             target.setDate(target.getDate() - dayNr + 3);
