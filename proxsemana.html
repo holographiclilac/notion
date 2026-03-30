@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semana de Produção Holográfica</title>
+    <title>Semana de Produção Holográfica e Acessível</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
 
@@ -46,9 +46,9 @@
             margin-bottom: 8px;
         }
 
-        /* --- TÉCNICA DE GRADIENTE NO TEXTO --- */
+        /* --- TÉCNICA DE GRADIENTE NO TEXTO + BRILHO DE CONTRASTE --- */
         .holo-text {
-            /* Definindo o Novo Gradiente: Amarelo -> Ciano -> Lilás -> Rosa */
+            /* Definindo o Gradiente: Amarelo -> Ciano -> Lilás -> Rosa */
             background-image: linear-gradient(to right, #FFF59D 0%, #99FFFF 33%, #CC99FF 66%, #FF99CC 100%);
             
             /* Recorta o fundo para ficar apenas dentro das letras */
@@ -61,6 +61,16 @@
             
             /* Garante compatibilidade */
             display: inline-block;
+
+            /* ========================================================
+               SOLUÇÃO DE CONTRASTE: Brilho Externo Suave (Outter Glow)
+               Criamos 3 camadas de sombras brancas para definir a borda,
+               e uma camada lilás difusa para criar a 'névoa' de separação.
+               ======================================================== */
+            text-shadow: 
+                0px 0px 3px #ffffff,
+                0px 0px 6px #ffffff,
+                0px 0px 9px rgba(120, 80, 180, 0.4); /* Névoa lilás suave pro contraste */
         }
 
         .subtitle {
@@ -77,6 +87,11 @@
             line-height: 1;
             margin-bottom: 12px;
             font-variant-numeric: tabular-nums;
+            /* Aplicando o mesmo brilho */
+            text-shadow: 
+                0px 0px 5px #ffffff,
+                0px 0px 10px #ffffff,
+                0px 0px 15px rgba(120, 80, 180, 0.4);
         }
 
         .status-pill {
