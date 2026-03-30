@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semana de Produção Holográfica e Acessível</title>
+    <title>Semana de Produção Holográfica</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
 
@@ -46,52 +46,36 @@
             margin-bottom: 8px;
         }
 
-        /* --- TÉCNICA DE GRADIENTE NO TEXTO + BRILHO DE CONTRASTE --- */
+        /* --- TÉCNICA DE GRADIENTE + CONTRASTE REAL --- */
         .holo-text {
-            /* Definindo o Gradiente: Amarelo -> Ciano -> Lilás -> Rosa */
-            background-image: linear-gradient(to right, #FFF59D 0%, #99FFFF 33%, #CC99FF 66%, #FF99CC 100%);
+            /* Cores um pouquinho mais saturadas para não sumirem no branco */
+            background-image: linear-gradient(to right, #F9D749 0%, #4DDFDF 33%, #B377E5 66%, #F070B0 100%);
             
-            /* Recorta o fundo para ficar apenas dentro das letras */
             -webkit-background-clip: text;
             background-clip: text;
-            
-            /* Torna a cor original do texto transparente para mostrar o fundo */
             -webkit-text-fill-color: transparent;
             text-fill-color: transparent;
-            
-            /* Garante compatibilidade */
             display: inline-block;
 
-            /* ========================================================
-               SOLUÇÃO DE CONTRASTE: Brilho Externo Suave (Outter Glow)
-               Criamos 3 camadas de sombras brancas para definir a borda,
-               e uma camada lilás difusa para criar a 'névoa' de separação.
-               ======================================================== */
-            text-shadow: 
-                0px 0px 3px #ffffff,
-                0px 0px 6px #ffffff,
-                0px 0px 9px rgba(120, 80, 180, 0.4); /* Névoa lilás suave pro contraste */
+            /* Truque de mestre: em vez de brilho branco, uma sombra roxinha suave */
+            filter: drop-shadow(0px 3px 4px rgba(120, 80, 180, 0.25));
         }
 
         .subtitle {
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: lowercase;
             margin-bottom: 5px;
-            opacity: 0.9;
         }
 
         .week-number {
-            font-size: 3.5rem;
+            font-size: 3.8rem; /* Aumentei um tiquinho pra dar mais destaque */
             font-weight: 700;
             line-height: 1;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-variant-numeric: tabular-nums;
-            /* Aplicando o mesmo brilho */
-            text-shadow: 
-                0px 0px 5px #ffffff,
-                0px 0px 10px #ffffff,
-                0px 0px 15px rgba(120, 80, 180, 0.4);
+            /* A sombra no número fica um pouco mais intensa para dar efeito 3D */
+            filter: drop-shadow(0px 4px 6px rgba(120, 80, 180, 0.3));
         }
 
         .status-pill {
@@ -103,6 +87,13 @@
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: lowercase;
+            transition: all 0.2s ease;
+        }
+
+        .status-pill:hover {
+            background-color: #FFF59D; /* Fica amarelinho quando passa o mouse! */
+            color: #d4a017;
+            border-color: #FFF59D;
         }
     </style>
 </head>
@@ -121,10 +112,10 @@
         function getNextWeekNumber() {
             const today = new Date();
             
-            // Adiciona exatos 7 dias à data de hoje
+            // Pula para a próxima semana exata
             const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
             
-            // Lógica oficial para descobrir o número da semana (ISO 8601)
+            // Descobre o número da semana
             const target = new Date(nextWeek.valueOf());
             const dayNr = (nextWeek.getDay() + 6) % 7;
             target.setDate(target.getDate() - dayNr + 3);
@@ -138,7 +129,6 @@
             return 1 + Math.ceil((firstThursday - target) / 604800000);
         }
         
-        // Atualiza o texto na tela
         document.getElementById('week-display').textContent = 'semana ' + getNextWeekNumber();
     </script>
 </body>
